@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * LegacyLogin_MatchedUserRecord
+ * LegacyLogin_MatchedUserModel
  *
  * @author    Top Shelf Craft <michael@michaelrog.com>
  * @copyright Copyright (c) 2016, Michael Rog
@@ -11,16 +11,8 @@ namespace Craft;
  * @package   craft.plugins.legacylogin
  * @since     1.0
  */
-class LegacyLogin_MatchedUserRecord extends BaseRecord
+class LegacyLogin_MatchedUserModel extends BaseModel
 {
-
-	/**
-	 * @return string
-	 */
-	public function getTableName()
-	{
-		return 'legacylogin_matchedusers';
-	}
 
 	/**
 	 * @access protected
@@ -29,39 +21,26 @@ class LegacyLogin_MatchedUserRecord extends BaseRecord
 	protected function defineAttributes()
 	{
 		return array(
-			'legacyUserType' => array(AttributeType::String, 'required' => true),
+			'craftUserId' => array(AttributeType::Number, 'required' => true),
+			'legacyUserType' => array(
+				AttributeType::Enum,
+				'values' => [LegacyLoginPlugin::EE2LegacyUserType, LegacyLoginPlugin::BigCommerceLegacyUserType],
+				'required' => true,
+			),
 			'legacyRecordId' => array(AttributeType::Number, 'required' => false),
 			'legacyUserId' => array(AttributeType::Number, 'required' => true),
 			'legacyUsername' => array(AttributeType::String, 'required' => false),
 			'legacyEmail' => array(AttributeType::String, 'required' => true),
-			'passwordSet' => array(AttributeType::Bool, 'required' => true, 'default' => false),
+			'passwordReset' => array(AttributeType::Bool, 'required' => true),
 		);
 	}
 
 	/**
-	 * @return array
+	 * @return UserModel|null
 	 */
-	public function defineRelations()
+	public function getCraftUser()
 	{
-		return array(
-			'craftUser' => array(static::BELONGS_TO, 'UserRecord', 'required' => true, 'onDelete' => static::CASCADE),
-		);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function defineIndexes()
-	{
-		return array();
-	}
-
-	/**
-	 * @return array
-	 */
-	public function scopes()
-	{
-		return array();
+		return craft()->users->getUserById($this->craftUserId);
 	}
 
 }

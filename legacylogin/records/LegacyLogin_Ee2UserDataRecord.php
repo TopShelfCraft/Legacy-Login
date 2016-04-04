@@ -2,7 +2,7 @@
 namespace Craft;
 
 /**
- * LegacyLogin_EeUserDataRecord
+ * LegacyLogin_Ee2UserDataRecord
  *
  * @author    Top Shelf Craft <michael@michaelrog.com>
  * @copyright Copyright (c) 2016, Michael Rog
@@ -11,7 +11,7 @@ namespace Craft;
  * @package   craft.plugins.legacylogin
  * @since     1.0
  */
-class LegacyLogin_EeUserDataRecord extends BaseRecord
+class LegacyLogin_Ee2UserDataRecord extends BaseRecord
 {
 
 	/**
@@ -19,7 +19,7 @@ class LegacyLogin_EeUserDataRecord extends BaseRecord
 	 */
 	public function getTableName()
 	{
-		return 'legacylogin_data_ee';
+		return 'legacylogin_data_ee2';
 	}
 
 	/**
