@@ -27,6 +27,9 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 	public static function login($loginName = null, $password = null, $rememberMe = false)
 	{
 
+		// Validate legacyData and password
+		if (empty($loginName) || empty($password)) return false;
+
 		LegacyLoginPlugin::log("Attempting to login {$loginName} as a BigCommerce legacy user...");
 
 		// If we have already matched a Craft user to this legacy user, too bad.
@@ -105,6 +108,7 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 		}
 
 		return null;
+
 	}
 
 	/**
@@ -145,8 +149,8 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 	public static function authenticate($legacyData = null, $password = null)
 	{
 
-		// Validate loginName and password
-		if (empty($legacyData) || empty($password)) return null;
+		// Validate legacyData and password
+		if (empty($legacyData) || empty($password)) return false;
 
 		if ($legacyData->custpassword === md5($password))
 		{
@@ -165,6 +169,9 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 	 */
 	public function makeMatchedUser($legacyData = null, $password = null)
 	{
+
+		// Validate legacyData and password
+		if (empty($legacyData) || empty($password)) return false;
 
 		// Grab settings from Craft config
 		$setPassword = craft()->config->get('setPassword', 'legacylogin');

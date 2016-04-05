@@ -13,7 +13,8 @@
 
 return array(
 
-	'allowedServices' => ['BigCommerce'],
+	'allowedServices' => ['BigCommerce', 'EE2'],
+	'matchBy' => 'email',
 	'setPassword' => true,
 	'requirePasswordReset' => false,
 
