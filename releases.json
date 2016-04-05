@@ -1,0 +1,11 @@
+[
+  {
+    "version": "0.0.1",
+    "downloadUrl": "https://github.com/TopShelfCraft/Legacy-Login/archive/0.0.1.zip",
+    "date": "2016-04-02T10:00:00",
+    "notes": [
+      "[Added] BigCommerce legacy login driver.",
+      "[Added] ExpressionEngine 2 legacy login driver."
+    ]
+  }
+]
