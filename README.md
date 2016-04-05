@@ -70,7 +70,7 @@ Finally, add the _Legacy Login_ form to your login template. The template follow
 
 
 
-### Configurtation
+### Configuration
 
 To customize the plugin's behavior, add a `legacylogin.php` file to your Craft config directory. (You can use `plugins/legacylogin/config.php` as a template.) The file should return an array; Like Craft's own General Configs, the _Legacy Login_ config supports Craft's [Multi-Environment Configs](https://craftcms.com/docs/multi-environment-configs) syntax.
 

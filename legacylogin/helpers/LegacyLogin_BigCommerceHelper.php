@@ -167,7 +167,7 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 	 *
 	 * @return LegacyLogin_MatchedUserModel|false
 	 */
-	public function makeMatchedUser($legacyData = null, $password = null)
+	public static function makeMatchedUser($legacyData = null, $password = null)
 	{
 
 		// Validate legacyData and password

@@ -98,7 +98,7 @@ class LegacyLogin_AuthenticationHelper
 	 *
 	 * @return LegacyLogin_MatchedUserModel|false
 	 */
-	public function makeMatchedUser($legacyData = null, $password = null)
+	public static function makeMatchedUser($legacyData = null, $password = null)
 	{
 
 		// Grab settings from Craft config.

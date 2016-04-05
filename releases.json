@@ -1,8 +1,17 @@
 [
   {
+    "version": "0.0.3",
+    "downloadUrl": "https://github.com/TopShelfCraft/Legacy-Login/archive/0.0.3.zip",
+    "date": "2016-04-04T11:07:00",
+    "notes": [
+      "[Fixed] Fixed an omission where the `makeMatchedUser()` helper method wasn't declared as static.",
+      "[Fixed] Fixed a typo in the docs."
+    ]
+  },
+  {
     "version": "0.0.2",
     "downloadUrl": "https://github.com/TopShelfCraft/Legacy-Login/archive/0.0.2.zip",
-    "date": "2016-04-02T22:55:00",
+    "date": "2016-04-04T22:55:00",
     "notes": [
       "[Improved] Added Setup and Config instructions to the docs.",
       "[Improved] Removed unutilized Composer setup and unused helper class."
@@ -11,7 +20,7 @@
   {
     "version": "0.0.1",
     "downloadUrl": "https://github.com/TopShelfCraft/Legacy-Login/archive/0.0.1.zip",
-    "date": "2016-04-02T10:00:00",
+    "date": "2016-04-04T20:00:00",
     "notes": [
       "[Added] BigCommerce legacy login driver.",
       "[Added] ExpressionEngine 2 legacy login driver."
