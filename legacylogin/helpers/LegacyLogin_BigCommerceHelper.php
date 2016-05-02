@@ -201,6 +201,9 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 				LegacyLoginPlugin::log("Couldn't save the user {$craftUser->username}.", LogLevel::Error);
 
 			}
+			else{
+				craft()->userGroups->assignUserToDefaultGroup($craftUser);
+			}
 
 		}
 		else {
@@ -229,7 +232,6 @@ class LegacyLogin_BigCommerceHelper extends LegacyLogin_AuthenticationHelper
 			if (!$success)
 			{
 				LegacyLoginPlugin::log("There was an error processing new password profile for {$craftUser->username}.", LogLevel::Error);
-
 			}
 
 		}
