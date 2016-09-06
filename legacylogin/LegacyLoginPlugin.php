@@ -19,7 +19,7 @@ class LegacyLoginPlugin extends BasePlugin
 
 	const EE2LegacyUserType = 'EE2';
 	const BigCommerceLegacyUserType = 'BigCommerce';
-
+	const NativeUserType = 'Craft';
 
 	// Plugin methods
 	// =========================================================================

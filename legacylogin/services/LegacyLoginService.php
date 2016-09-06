@@ -56,7 +56,7 @@ class LegacyLoginService extends \CWebUser
 		// First, try logging in a native User.
 
 		$nativeSuccess = craft()->userSession->login($username, $password, $rememberMe);
-		if ($nativeSuccess === true) return true;
+		if ($nativeSuccess === true) return LegacyLoginPlugin::NativeUserType;
 
 		// Okay, we'll try to match and validate a legacy user...
 		// First, validate the provided username/password.
@@ -87,11 +87,11 @@ class LegacyLoginService extends \CWebUser
 
 				case LegacyLoginPlugin::BigCommerceLegacyUserType:
 					if (LegacyLogin_BigCommerceHelper::login($username, $password, $rememberMe))
-						return true;
+						return LegacyLoginPlugin::BigCommerceLegacyUserType;
 
 				case LegacyLoginPlugin::EE2LegacyUserType:
 					if (LegacyLogin_Ee2Helper::login($username, $password, $rememberMe))
-						return true;
+						return LegacyLoginPlugin::EE2LegacyUserType;
 
 			}
 		}

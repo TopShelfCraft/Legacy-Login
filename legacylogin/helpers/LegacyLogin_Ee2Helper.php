@@ -264,7 +264,9 @@ class LegacyLogin_Ee2Helper extends LegacyLogin_AuthenticationHelper
 				LegacyLoginPlugin::log("Couldn't save the user {$craftUser->username}.", LogLevel::Error);
 
 			}
-
+			else{
+				craft()->userGroups->assignUserToDefaultGroup($craftUser);
+			}
 		}
 		else {
 			$success = true;

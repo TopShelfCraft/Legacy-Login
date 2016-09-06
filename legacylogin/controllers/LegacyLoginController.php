@@ -42,7 +42,7 @@ class LegacyLoginController extends BaseController
 
 		// TODO
 
-		// If the User is already logged in, skip straight to processomg this as a successful login.
+		// If the User is already logged in, skip straight to processing this as a successful login.
 		if (craft()->userSession->isLoggedIn())
 		{
 			$this->_handleSuccessfulLogin(false);
@@ -59,9 +59,9 @@ class LegacyLoginController extends BaseController
 		$password = craft()->request->getPost('password');
 		$rememberMe = (bool) craft()->request->getPost('rememberMe');
 
-		if (craft()->legacyLogin->login($loginName, $password, $rememberMe))
+		if ($loginType = craft()->legacyLogin->login($loginName, $password, $rememberMe))
 		{
-			$this->_handleSuccessfulLogin(true);
+			$this->_handleSuccessfulLogin($loginType, true);
 		}
 		else
 		{
@@ -102,11 +102,12 @@ class LegacyLoginController extends BaseController
 	 * Redirects the user after a successful login attempt, or if they visited the Login page while they were already
 	 * logged in.
 	 *
+	 * @param string $loginType What type of login was achieved, legacy or Craft native.
 	 * @param bool $setNotice Whether a flash notice should be set, if this isn't an Ajax request.
 	 *
 	 * @return null
 	 */
-	private function _handleSuccessfulLogin($setNotice = true)
+	private function _handleSuccessfulLogin($loginType, $setNotice = true)
 	{
 
 		// TODO
@@ -141,6 +142,7 @@ class LegacyLoginController extends BaseController
 		{
 			$this->returnJson(array(
 				'success' => true,
+				'legacyLoginType' => $loginType,
 				'returnUrl' => $returnUrl
 			));
 		}
@@ -148,8 +150,10 @@ class LegacyLoginController extends BaseController
 		{
 			if ($setNotice)
 			{
-				craft()->userSession->setNotice(Craft::t('Logged in.'));
+				craft()->userSession->setNotice(Craft::t('Logged in.' ));				
 			}
+			//Store the login method so templates can act on the login type	
+			craft()->httpSession->add("legacyLoginType", $loginType);
 			$this->redirectToPostedUrl($currentUser, $returnUrl);
 		}
 
