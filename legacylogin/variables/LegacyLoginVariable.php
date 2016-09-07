@@ -19,8 +19,10 @@ class LegacyLoginVariable
      *
      * @return Craft|BigCommerce|EE2|null
      */
-    public function loginType(){
-        return craft()->httpSession->get("legacyLoginType");
+    public function loginType($consume=true){
+        $temp = craft()->httpSession->get("legacyLoginType");
+        if($consume) craft()->httpSession->remove("legacyLoginType");
+        return $temp;
     }
 
 }
