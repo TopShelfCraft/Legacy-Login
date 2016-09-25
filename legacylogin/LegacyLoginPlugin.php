@@ -19,6 +19,8 @@ class LegacyLoginPlugin extends BasePlugin
 
 	const EE2LegacyUserType = 'EE2';
 	const BigCommerceLegacyUserType = 'BigCommerce';
+	const WellspringLegacyUserType = 'Wellspring';
+
 	const NativeUserType = 'Craft';
 
 	// Plugin methods
@@ -79,7 +81,7 @@ class LegacyLoginPlugin extends BasePlugin
 	 */
 	public function getVersion()
 	{
-		return '0.0.3';
+		return '0.0.4';
 	}
 
 	/**

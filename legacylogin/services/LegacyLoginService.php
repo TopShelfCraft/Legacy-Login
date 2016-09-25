@@ -88,11 +88,15 @@ class LegacyLoginService extends \CWebUser
 				case LegacyLoginPlugin::BigCommerceLegacyUserType:
 					if (LegacyLogin_BigCommerceHelper::login($username, $password, $rememberMe))
 						return LegacyLoginPlugin::BigCommerceLegacyUserType;
-
+					break;
 				case LegacyLoginPlugin::EE2LegacyUserType:
 					if (LegacyLogin_Ee2Helper::login($username, $password, $rememberMe))
 						return LegacyLoginPlugin::EE2LegacyUserType;
-
+					break;
+				case LegacyLoginPlugin::WellspringLegacyUserType:
+					if (LegacyLogin_WellspringHelper::login($username, $password, $rememberMe))
+						return LegacyLoginPlugin::EE2LegacyUserType;
+					break;
 			}
 		}
 
