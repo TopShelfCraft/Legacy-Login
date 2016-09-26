@@ -16,24 +16,6 @@ namespace Craft;
  */
 class LegacyLoginService extends \CWebUser
 {
-
-	// Constants
-	// =========================================================================
-
-	const YAR = 'yar';
-
-
-	// Properties
-	// =========================================================================
-
-	/**
-	 * Stores the user identity.
-	 *
-	 * @var UserIdentity
-	 */
-	private $_identity;
-
-
 	// Public Methods
 	// =========================================================================
 
@@ -95,7 +77,11 @@ class LegacyLoginService extends \CWebUser
 					break;
 				case LegacyLoginPlugin::WellspringLegacyUserType:
 					if (LegacyLogin_WellspringHelper::login($username, $password, $rememberMe))
-						return LegacyLoginPlugin::EE2LegacyUserType;
+                        return LegacyLoginPlugin::WellspringLegacyUserType;
+                    break;
+				case LegacyLoginPlugin::WordPressLegacyUserType:
+					if (LegacyLogin_WordPressHelper::login($username, $password, $rememberMe))
+						return LegacyLoginPlugin::WordPressLegacyUserType;
 					break;
 			}
 		}

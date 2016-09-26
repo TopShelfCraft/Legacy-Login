@@ -13,7 +13,7 @@
 
 return array(
 
-	'allowedServices' => ['BigCommerce', 'EE2', 'Wellspring'],
+	'allowedServices' => ['BigCommerce', 'EE2', 'Wellspring', 'WordPress'],
 	'matchBy' => 'email',
 	'setPassword' => true,
 	'requirePasswordReset' => false,
