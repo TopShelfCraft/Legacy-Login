@@ -22,12 +22,9 @@ The plugin replaces the normal `login` form action. If a submitted `loginName`/`
 Drivers are provided for authenticating legacy users from:
 
 - ExpressionEngine 2.x
-- BigCommerce (Self-hosted)
-
-In the future, I'd like to add drivers for:
-
 - WordPress
-
+- BigCommerce (Self-hosted)
+- Wellspring
 
 
 ### Setup
@@ -80,7 +77,7 @@ The following settings are available:
 
 An _array_ containing allowed legacy system names: `'BigCommerce'`, `'EE2'`, or both
 
-Default: `['BigCommerce', 'EE2']`
+Default: `['BigCommerce', 'EE2', 'Wellspring', 'WordPress']`
 
 ##### `matchBy`
 
@@ -119,3 +116,4 @@ I'm not surprised... _Legacy Login_ is still in development. Please open a GitHu
 #### Contributors:
 
   - Plugin development: [Michael Rog](http://michaelrog.com) / @michaelrog
+  - Added WordPress and Wellspring drivers: [Aaron Waldon](https://www.causingeffect.com) / @aaronwaldon
