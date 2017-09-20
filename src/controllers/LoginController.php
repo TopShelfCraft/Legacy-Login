@@ -6,6 +6,7 @@ use Craft;
 use craft\web\Controller;
 use topshelfcraft\legacylogin\LegacyLogin;
 use topshelfcraft\legacylogin\models\LoginModel;
+use \yii\base\Response;
 
 /**
  * Login Controller
@@ -21,7 +22,7 @@ class LoginController extends Controller
 
     /**
      * Handles log-in via POST request
-     * @return null
+     * @return Response|null
      * @throws \Exception
      */
     public function actionLogin()
@@ -52,6 +53,14 @@ class LoginController extends Controller
 
         // Check if the model validates
         if (! $model->validate()) {
+            // Check for ajax request
+            if ($requestService->getIsAjax()) {
+                return $this->asJson([
+                    'success' => false,
+                    'inputErrors' => $model->getErrors()
+                ]);
+            }
+
             // Set route variables
             Craft::$app->getUrlManager()->setRouteParams($model->toArray() + [
                 'inputErrors' => $model->getErrors(),
@@ -62,14 +71,26 @@ class LoginController extends Controller
         }
 
         // Attempt to log the user in
-        if (! $type = LegacyLogin::$plugin->getLoginService()->login($model)) {
-            // TODO: implement the login service method
-            var_dump('hey, we should do error stuff here');
-            die;
+        $responseModel = LegacyLogin::$plugin->getLoginService()->login($model);
+
+        // If the login attempt didn't go as planned...
+        if (! $responseModel->success) {
+            // Check for ajax request
+            if ($requestService->getIsAjax()) {
+                return $this->asJson($responseModel->toArray());
+            }
+
+            // Set route variables
+            Craft::$app->getUrlManager()->setRouteParams(
+                $responseModel->toArray()
+            );
+
+            // End processing
+            return null;
         }
 
         // Handle the successful login
-        return $this->handleSuccessfulLogin($type);
+        return $this->handleSuccessfulLogin($responseModel->type);
     }
 
     /**
