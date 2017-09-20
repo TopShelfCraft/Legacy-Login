@@ -1,0 +1,54 @@
+{
+    "name": "topshelfcraft/legacylogin",
+    "description": "User-base migration made simple.",
+    "type": "craft-plugin",
+    "version": "0.0.5",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "Excel Import"
+    ],
+    "authors": [
+        {
+            "name": "Michael Rog",
+            "homepage": "https://michaelrog.com/"
+        },
+        {
+            "name": "Aaron Waldon",
+            "homepage": "https://www.causingeffect.com"
+        },
+        {
+            "name": "TJ Draper",
+            "homepage": "https://buzzingpixel.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "craftcms/cms": "^3.0.0-beta.28",
+        "vlucas/phpdotenv": "^2.4.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "topshelfcraft\\legacylogin\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Legacy Login",
+        "handle": "legacy-login",
+        "developer": "Top Shelf Craft",
+        "developerUrl": "https://topshelfcraft.com",
+        "schemaVersion": "0.0.0",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "class": "topshelfcraft\\legacylogin\\LegacyLogin"
+    }
+}
