@@ -5,6 +5,7 @@ namespace topshelfcraft\legacylogin\controllers;
 use Craft;
 use craft\web\Controller;
 use topshelfcraft\legacylogin\LegacyLogin;
+use topshelfcraft\legacylogin\models\LoginModel;
 
 /**
  * Login Controller
@@ -30,7 +31,7 @@ class LoginController extends Controller
 
         // If user is already logged in skip to processing as successful
         if (Craft::$app->getUser()->identity !== null) {
-            $this->handleSuccessfulLogin();
+            return $this->handleSuccessfulLogin();
         }
 
         // A little house-cleaning for expired, pending users.
@@ -42,11 +43,28 @@ class LoginController extends Controller
         // Get the request service
         $requestService = Craft::$app->getRequest();
 
-        $loginName = $requestService->post('loginName');
-        $password = $requestService->post('password');
-        $rememberMe = (bool) $requestService->post('rememberMe');
+        // Get posted inputs and assign them to the model
+        $model = new LoginModel([
+            'username' => $requestService->post('username'),
+            'password' => $requestService->post('password'),
+            'rememberMe' => (bool) $requestService->post('rememberMe'),
+        ]);
 
-        var_dump(LegacyLogin::$plugin->getLoginService());
+        // Check if the model validates
+        if (! $model->validate()) {
+            // Set route variables
+            Craft::$app->getUrlManager()->setRouteParams($model->toArray() + [
+                'inputErrors' => $model->getErrors(),
+            ]);
+
+            // End processing
+            return null;
+        }
+
+        // Attempt to log the user in
+        if ($type = LegacyLogin::$plugin->getLoginService()->login($model)) {
+            return $this->handleSuccessfulLogin($type);
+        }
 
         // TODO: implement the login service method
         var_dump('hey, we should do some stuff here');
