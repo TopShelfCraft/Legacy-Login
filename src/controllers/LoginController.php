@@ -62,13 +62,14 @@ class LoginController extends Controller
         }
 
         // Attempt to log the user in
-        if ($type = LegacyLogin::$plugin->getLoginService()->login($model)) {
-            return $this->handleSuccessfulLogin($type);
+        if (! $type = LegacyLogin::$plugin->getLoginService()->login($model)) {
+            // TODO: implement the login service method
+            var_dump('hey, we should do error stuff here');
+            die;
         }
 
-        // TODO: implement the login service method
-        var_dump('hey, we should do some stuff here');
-        die;
+        // Handle the successful login
+        return $this->handleSuccessfulLogin($type);
     }
 
     /**
