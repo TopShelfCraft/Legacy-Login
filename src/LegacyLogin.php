@@ -5,7 +5,11 @@ namespace topshelfcraft\legacylogin;
 use Craft;
 use craft\console\Application as ConsoleApplication;
 use craft\base\Plugin;
+use topshelfcraft\legacylogin\controllers\LoginController;
 use topshelfcraft\legacylogin\models\SettingsModel;
+use yii\base\Event;
+use craft\web\UrlManager;
+use craft\events\RegisterUrlRulesEvent;
 
 /**
  * Class LegacyLogin
@@ -26,12 +30,29 @@ class LegacyLogin extends Plugin
         // Save an instance of this plugin for easy reference throughout app
         self::$plugin = $this;
 
+        // Set a variable for whether this is a console request or not
+        $isConsole = Craft::$app instanceof ConsoleApplication;
+
         // Add in our console commands
-        if (Craft::$app instanceof ConsoleApplication) {
+        if ($isConsole) {
             $this->controllerNamespace = 'topshelfcraft\legacylogin\console\controllers';
         }
 
-        $this->createSettingsModel();
+        // If not console request we have to map controllers for action requests
+        if (! $isConsole) {
+            $this->controllerMap = [
+                'login' => LoginController::class,
+            ];
+        }
+
+        // Register actions
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['legacy-login/login/login'] = 'legacy-login/login/login';
+            }
+        );
     }
 
     /**
