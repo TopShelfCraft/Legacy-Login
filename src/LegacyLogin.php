@@ -7,12 +7,14 @@ use craft\console\Application as ConsoleApplication;
 use craft\base\Plugin;
 use topshelfcraft\legacylogin\controllers\LoginController;
 use topshelfcraft\legacylogin\models\SettingsModel;
+use topshelfcraft\legacylogin\services\LoginService;
 use yii\base\Event;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
 
 /**
  * Class LegacyLogin
+ * @property LoginService $loginService
  */
 class LegacyLogin extends Plugin
 {
@@ -63,5 +65,14 @@ class LegacyLogin extends Plugin
     {
         // Return the settings model
         return new SettingsModel();
+    }
+
+    /**
+     * Get login service
+     * @return LoginService
+     */
+    public function getLoginService() : LoginService
+    {
+        return new LoginService();
     }
 }

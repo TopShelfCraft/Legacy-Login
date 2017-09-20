@@ -4,6 +4,7 @@ namespace topshelfcraft\legacylogin\controllers;
 
 use Craft;
 use craft\web\Controller;
+use topshelfcraft\legacylogin\LegacyLogin;
 
 /**
  * Login Controller
@@ -44,6 +45,8 @@ class LoginController extends Controller
         $loginName = $requestService->post('loginName');
         $password = $requestService->post('password');
         $rememberMe = (bool) $requestService->post('rememberMe');
+
+        var_dump(LegacyLogin::$plugin->getLoginService());
 
         // TODO: implement the login service method
         var_dump('hey, we should do some stuff here');
