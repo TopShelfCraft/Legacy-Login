@@ -42,7 +42,7 @@ class CraftLoginService extends BaseLoginService
         // Get standard session duration
         $duration = $this->generalConfig->userSessionDuration;
 
-        // If user has opted to "remember me", get rememberd session duration
+        // If user has opted to "remember me", get remembered session duration
         if ($model->rememberMe &&
             $this->generalConfig->rememberedUserSessionDuration !== 0
         ) {

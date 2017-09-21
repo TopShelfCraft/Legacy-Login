@@ -8,6 +8,7 @@ use craft\base\Plugin;
 use craft\db\Query;
 use topshelfcraft\legacylogin\controllers\LoginController;
 use topshelfcraft\legacylogin\models\SettingsModel;
+use topshelfcraft\legacylogin\services\CraftUserService;
 use topshelfcraft\legacylogin\services\LoginService;
 use topshelfcraft\legacylogin\services\MatchedUserService;
 use yii\base\Event;
@@ -91,6 +92,19 @@ class LegacyLogin extends Plugin
         return new MatchedUserService([
             'queryBuilder' => new Query(),
             'matchedUserModel' => new MatchedUserModel(),
+        ]);
+    }
+
+    /**
+     * Get CraftUserService
+     * @return CraftUserService
+     */
+    public function getCraftUserService() : CraftUserService
+    {
+        return new CraftUserService([
+            'currentUser' => Craft::$app->getUser(),
+            'usersService' => Craft::$app->getUsers(),
+            'generalConfig' => Craft::$app->getConfig()->getGeneral(),
         ]);
     }
 }

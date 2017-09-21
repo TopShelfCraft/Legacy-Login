@@ -2,7 +2,9 @@
 
 namespace topshelfcraft\legacylogin\models\services;
 
+use topshelfcraft\legacylogin\LegacyLogin;
 use topshelfcraft\legacylogin\services\login\BaseLoginService;
+use topshelfcraft\legacylogin\services\login\EE2LoginService;
 
 /**
  * Class EE2LoginConfigModel
@@ -17,8 +19,13 @@ class EE2LoginConfigModel extends BaseLoginConfigModel
      */
     public function getLoginService(): BaseLoginService
     {
-        // TODO: Implement getLoginService() method.
-        var_dump('TODO: Implement getLoginService() method.');
-        die;
+        $instance = LegacyLogin::$plugin;
+
+        return new EE2LoginService([
+            'config' => $this,
+            'matchedUserService' => $instance->getMatchedUserService(),
+            'queryBuilder' => $this->getQueryBuilder(),
+            'craftUserService' => $instance->getCraftUserService(),
+        ]);
     }
 }

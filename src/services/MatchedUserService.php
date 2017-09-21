@@ -17,6 +17,17 @@ class MatchedUserService extends BaseService
     protected $matchedUserModel;
 
     /**
+     * Make new model
+     * @return MatchedUserModel
+     */
+    public function makeNewModel() : MatchedUserModel
+    {
+        $matchedUserModel = clone $this->matchedUserModel;
+        $matchedUserModel->legacyLoginCount = 0;
+        return clone $this->matchedUserModel;
+    }
+
+    /**
      * Get matched user by username or email
      * @param string $userNameOrEmail
      * @param string $type

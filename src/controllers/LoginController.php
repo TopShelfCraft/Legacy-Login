@@ -36,12 +36,6 @@ class LoginController extends Controller
             return $this->handleSuccessfulLogin();
         }
 
-        // A little house-cleaning for expired, pending users.
-        // (Same as in the UsersController, natch.)
-        Craft::$app->getUsers()->purgeExpiredPendingUsers();
-
-        // Okay, let's go
-
         // Get the request service
         $requestService = Craft::$app->getRequest();
 
