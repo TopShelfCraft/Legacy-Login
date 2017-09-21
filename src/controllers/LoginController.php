@@ -3,6 +3,7 @@
 namespace topshelfcraft\legacylogin\controllers;
 
 use Craft;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use topshelfcraft\legacylogin\LegacyLogin;
 use topshelfcraft\legacylogin\models\LoginModel;
@@ -31,7 +32,7 @@ class LoginController extends Controller
         $this->requirePostRequest();
 
         // If user is already logged in skip to processing as successful
-        if (Craft::$app->getUser()->identity !== null) {
+        if (Craft::$app->getUser()->getIdentity() !== null) {
             return $this->handleSuccessfulLogin();
         }
 
@@ -97,14 +98,69 @@ class LoginController extends Controller
      * Handles the post-login process
      * @param string $loginType legacy|craft
      * @param bool $setNotice Whether a flash notice should be set if not AJAX
+     * @return Response
+     * @throws \Exception
      */
     private function handleSuccessfulLogin(
         string $loginType = '',
         bool $setNotice = true
-    ) {
-        // TODO: handle successful login
-        var_dump($loginType);
-        var_dump($setNotice);
-        die;
+    ) : Response {
+        // Get the session service
+        $sessionService = Craft::$app->getSession();
+
+        // Get the current user
+        $currentUser = Craft::$app->getUser()->getIdentity();
+
+        // Find out if they were trying to access a URL beforehand
+        $returnUrl = Craft::$app->getUser()->getReturnUrl();
+
+        // Get request service
+        $requestService = Craft::$app->getRequest();
+
+        if ($returnUrl === null ||
+            $returnUrl === $requestService->getFullPath()
+        ) {
+            // If this is a CP request and they can access CP, send them
+            // wherever postCpLoginRedirect tells us
+            if ($requestService->getIsCpRequest() &&
+                $currentUser->can('accessCp')
+            ) {
+                $postCpLoginRedirect = Craft::$app->getConfig()
+                    ->getGeneral()
+                    ->postCpLoginRedirect;
+
+                $returnUrl = UrlHelper::cpUrl($postCpLoginRedirect);
+            }
+
+            if ($returnUrl) {
+                $postLoginRedirect = Craft::$app->getConfig()
+                    ->getGeneral()
+                    ->postLoginRedirect;
+
+                $returnUrl = UrlHelper::siteUrl($postLoginRedirect);
+            }
+        }
+
+        // Check if we should respond with ajax
+        if ($requestService->getIsAjax()) {
+            return $this->asJson([
+                'success' => true,
+                'legacyLoginType' => $loginType,
+                'returnUrl' => $returnUrl,
+            ]);
+        }
+
+        // Check if we should set the notice
+        if ($setNotice) {
+            // Set the notice
+            $sessionService->setNotice(Craft::t('legacy-login', 'Logged in.'));
+        }
+
+        // Store login information for use by the next request
+        $sessionService->setFlash('legacyLoginSuccess', true);
+        $sessionService->setFlash('legacyLoginType', $loginType);
+
+        // Redirect to the correct URL
+        return $this->redirect($returnUrl);
     }
 }
