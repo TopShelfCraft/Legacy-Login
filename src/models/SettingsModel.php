@@ -78,6 +78,8 @@ class SettingsModel extends Model
         $class = "\\topshelfcraft\\legacylogin\\models\\services\\{$modelName}";
 
         // Return the model
-        return new $class($config);
+        return new $class($config + [
+            'configured' => true,
+        ]);
     }
 }
