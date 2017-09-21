@@ -55,11 +55,6 @@ class SettingsModel extends Model
             unset($configModelNames[$key]);
         }
 
-        // Get remainder of config items
-        foreach ($configModelNames as $modelName) {
-            $serviceModels[] = $this->getConfigSettingsModel($modelName);
-        }
-
         // Return the service models
         return $serviceModels;
     }
