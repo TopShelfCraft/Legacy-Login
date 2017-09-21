@@ -73,6 +73,8 @@ class LegacyLogin extends Plugin
      */
     public function getLoginService() : LoginService
     {
-        return new LoginService();
+        return new LoginService([
+            'settings' => $this->getSettings()
+        ]);
     }
 }
