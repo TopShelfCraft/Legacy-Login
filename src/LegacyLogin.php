@@ -5,16 +5,20 @@ namespace topshelfcraft\legacylogin;
 use Craft;
 use craft\console\Application as ConsoleApplication;
 use craft\base\Plugin;
+use craft\db\Query;
 use topshelfcraft\legacylogin\controllers\LoginController;
 use topshelfcraft\legacylogin\models\SettingsModel;
 use topshelfcraft\legacylogin\services\LoginService;
+use topshelfcraft\legacylogin\services\MatchedUserService;
 use yii\base\Event;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
+use topshelfcraft\legacylogin\models\MatchedUserModel;
 
 /**
  * Class LegacyLogin
  * @property LoginService $loginService
+ * @property MatchedUserService $matchedUserService
  */
 class LegacyLogin extends Plugin
 {
@@ -75,6 +79,18 @@ class LegacyLogin extends Plugin
     {
         return new LoginService([
             'settings' => $this->getSettings()
+        ]);
+    }
+
+    /**
+     * Get matched user service
+     * @return MatchedUserService
+     */
+    public function getMatchedUserService() : MatchedUserService
+    {
+        return new MatchedUserService([
+            'queryBuilder' => new Query(),
+            'matchedUserModel' => new MatchedUserModel(),
         ]);
     }
 }
