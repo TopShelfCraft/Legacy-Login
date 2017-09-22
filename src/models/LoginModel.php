@@ -18,6 +18,9 @@ class LoginModel extends Model
     /** @var bool $rememberMe */
     public $rememberMe = false;
 
+    /** @var string $email */
+    public $email = '';
+
     /**
      * @inheritdoc
      */

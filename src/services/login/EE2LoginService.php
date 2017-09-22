@@ -18,6 +18,8 @@ class EE2LoginService extends BaseLoginService
 
     /**
      * @inheritdoc
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function logIn(LoginModel $model): bool
     {
@@ -49,6 +51,10 @@ class EE2LoginService extends BaseLoginService
             return false;
         }
 
+        // Add username and email from legacy
+        $model->username = $userRow['username'];
+        $model->email = $userRow['email'];
+
         // Create a new Craft user
         $craftUser = $this->craftUserService->logUserInFromLegacy(
             $model,
@@ -56,19 +62,24 @@ class EE2LoginService extends BaseLoginService
             $this->config->requirePasswordReset
         );
 
-        var_dump($craftUser);
-        die;
-
         // If there's no matched user, create a new one
         if (! $matchedUser) {
             $matchedUser = $this->matchedUserService->makeNewModel();
         }
 
         // Populate the model
+        $matchedUser->userId = $craftUser->id;
         $matchedUser->legacyUserType = $this->config::TYPE;
+        $matchedUser->legacyUsername = $userRow['username'];
+        $matchedUser->legacyEmail = $userRow['email'];
+        $matchedUser->passwordSet = $this->config->setPasswordFromLegacyPassword;
+        ++$matchedUser->legacyLoginCount;
 
-        var_dump($userRow);
-        die;
+        // Save the matched user
+        $this->matchedUserService->saveMatchedUser($matchedUser);
+
+        // We're done
+        return true;
     }
 
     /**

@@ -68,7 +68,7 @@ class MatchedUserService extends BaseService
      * @param array $dbArrayValues
      * @return MatchedUserModel
      */
-    private function createModelFromDbArrayValues($dbArrayValues)
+    private function createModelFromDbArrayValues($dbArrayValues) : MatchedUserModel
     {
         // Get a new matched user model
         $model = clone $this->matchedUserModel;
@@ -93,5 +93,49 @@ class MatchedUserService extends BaseService
 
         // Return the model
         return $model;
+    }
+
+    /**
+     * Save matched user
+     * @param MatchedUserModel $model
+     * @return bool
+     */
+    public function saveMatchedUser(MatchedUserModel $model) : bool
+    {
+        // Get a clean instance of the query builder
+        $queryBuilder = clone $this->queryBuilder;
+
+        // Get a command instance
+        $command = $queryBuilder->createCommand();
+
+        // Get the array of columns to save
+        $saveData = $model->toArray();
+
+        // Get the ID
+        $id = $saveData['id'];
+
+        // Unset the ID
+        unset($saveData['id']);
+
+        // We should perform an update if there's an id
+        if ($model->id) {
+            $command->update(
+                '{{%legacyLoginMatchedUserRecords}}',
+                $saveData,
+                '`id` = :id',
+                [
+                    ':id' => $id
+                ]
+            );
+
+            // We're done
+            return true;
+        }
+
+        // We'll be inserting a new one since there's no id
+        $command->insert('{{%legacyLoginMatchedUserRecords}}', $saveData);
+
+        // We're done
+        return true;
     }
 }
