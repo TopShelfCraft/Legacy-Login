@@ -99,6 +99,7 @@ class MatchedUserService extends BaseService
      * Save matched user
      * @param MatchedUserModel $model
      * @return bool
+     * @throws \Exception
      */
     public function saveMatchedUser(MatchedUserModel $model) : bool
     {
@@ -126,14 +127,15 @@ class MatchedUserService extends BaseService
                 [
                     ':id' => $id
                 ]
-            );
+            )->execute();
 
             // We're done
             return true;
         }
 
         // We'll be inserting a new one since there's no id
-        $command->insert('{{%legacyLoginMatchedUserRecords}}', $saveData);
+        $command->insert('{{%legacyLoginMatchedUserRecords}}', $saveData)
+            ->execute();
 
         // We're done
         return true;
