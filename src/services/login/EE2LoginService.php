@@ -106,7 +106,7 @@ class EE2LoginService extends BaseLoginService
             ->orWhere('`email` = :userNameOrEmail', $params)
             ->one();
 
-        return $userRow;
+        return $userRow ?: [];
     }
 
     /**
