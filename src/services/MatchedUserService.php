@@ -76,7 +76,7 @@ class MatchedUserService extends BaseService
         // Iterate over items and cast values
         foreach ($dbArrayValues as $key => $val) {
             // Make sure property is settable
-            if (! isset($model->{$key})) {
+            if (! $model->hasProperty($key)) {
                 continue;
             }
 
