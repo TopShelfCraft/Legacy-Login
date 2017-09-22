@@ -10,6 +10,8 @@ use craft\web\User as CurrentUser;
 use craft\elements\User;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
+use craft\services\Elements;
+use craft\web\Application;
 
 /**
  * Class CraftUserService
@@ -24,6 +26,24 @@ class CraftUserService extends BaseService
 
     /** @var CurrentUser $currentUser */
     protected $currentUser;
+
+    /** @var Elements $elementsService */
+    protected $elementsService;
+
+    /** @var int $craftEdition */
+    protected $craftEdition;
+
+    /** @var int $clientEditionInt */
+    protected $clientEditionInt;
+
+    /** @var int $proEditionInt */
+    protected $proEditionInt;
+
+    /** @var Application $craftApp */
+    protected $craftApp;
+
+    /** @var User $userModel */
+    protected $userModel;
 
     /**
      * Log user in
@@ -64,7 +84,7 @@ class CraftUserService extends BaseService
         }
 
         // Save the user
-        if (! Craft::$app->getElements()->saveElement($user)) {
+        if (! $this->elementsService->saveElement($user)) {
             return null;
         }
 
@@ -100,10 +120,13 @@ class CraftUserService extends BaseService
      */
     private function createUser($model) : User
     {
+        // Create a new user
+        $user = clone $this->userModel;
+
         // Check if this is client edition or other
-        if (Craft::$app->getEdition() === Craft::Client) {
+        if ($this->craftEdition === $this->clientEditionInt) {
             // Make sure there's no Client user yet
-            $clientExists = User::find()
+            $clientExists = $this->userModel::find()
                 ->client()
                 ->status(null)
                 ->exists();
@@ -115,18 +138,15 @@ class CraftUserService extends BaseService
                 );
             }
 
-            // Create a new user
-            $user = new User();
-
             // Set user as client
             $user->client = true;
         } else {
             // Make sure this is Craft Pro, since that's required for having
             // multiple user accounts
-            Craft::$app->requireEdition(Craft::Pro);
+            $this->craftApp->requireEdition($this->proEditionInt);
 
             // Make sure public registration is allowed
-            if (! Craft::$app->getSystemSettings()->getSetting(
+            if (! $this->craftApp->getSystemSettings()->getSetting(
                 'users',
                 'allowPublicRegistration'
             )) {
@@ -134,9 +154,6 @@ class CraftUserService extends BaseService
                     'Public registration is not allowed'
                 );
             }
-
-            // Create a new user
-            $user = new User();
         }
 
         // Set username and email

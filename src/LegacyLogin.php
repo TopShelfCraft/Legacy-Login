@@ -15,6 +15,7 @@ use yii\base\Event;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
 use topshelfcraft\legacylogin\models\MatchedUserModel;
+use craft\elements\User;
 
 /**
  * Class LegacyLogin
@@ -105,6 +106,12 @@ class LegacyLogin extends Plugin
             'currentUser' => Craft::$app->getUser(),
             'usersService' => Craft::$app->getUsers(),
             'generalConfig' => Craft::$app->getConfig()->getGeneral(),
+            'elementsService' => Craft::$app->getElements(),
+            'craftEdition' => Craft::$app->getEdition(),
+            'clientEditionInt' => Craft::Client,
+            'proEditionInt' => Craft::Pro,
+            'craftApp' => Craft::$app,
+            'userModel' => new User(),
         ]);
     }
 }
