@@ -75,6 +75,11 @@ class MatchedUserService extends BaseService
 
         // Iterate over items and cast values
         foreach ($dbArrayValues as $key => $val) {
+            // Make sure property is settable
+            if (! isset($model->{$key})) {
+                continue;
+            }
+
             // Cast integers
             if (in_array($key, [
                 'id',
@@ -88,6 +93,7 @@ class MatchedUserService extends BaseService
                 $val = $val === '1' || $val === 1;
             }
 
+            // Set the property
             $model->{$key} = $val;
         }
 
