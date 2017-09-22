@@ -14,6 +14,10 @@ class m170921_170153_CreateMatchedUserRecordTable extends Migration
      */
     public function safeUp() : bool
     {
+        if ($this->db->tableExists('{{%legacyLoginMatchedUserRecords}}')) {
+            return true;
+        }
+
         $this->createTable('{{%legacyLoginMatchedUserRecords}}', [
             'id' => $this->primaryKey(),
             'userId' => $this->integer()->notNull(),
@@ -45,7 +49,7 @@ class m170921_170153_CreateMatchedUserRecordTable extends Migration
      */
     public function safeDown() : bool
     {
-        $this->dropTable('{{%legacyLoginMatchedUserRecords}}');
+        $this->dropTableIfExists('{{%legacyLoginMatchedUserRecords}}');
 
         return true;
     }
