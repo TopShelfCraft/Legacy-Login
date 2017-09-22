@@ -22,6 +22,9 @@ class m170921_170153_CreateMatchedUserRecordTable extends Migration
             'legacyEmail' => $this->string()->notNull(),
             'passwordSet' => $this->boolean(),
             'legacyLoginCount' => $this->integer()->notNull(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'uid' => $this->uid(),
         ], 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB');
 
         $this->addForeignKey(
