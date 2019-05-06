@@ -1,15 +1,19 @@
 {
-    "name": "topshelfcraft/legacylogin",
+    "name": "topshelfcraft/legacy-login",
     "description": "User-base migration made simple.",
     "type": "craft-plugin",
-    "version": "0.0.5",
+    "version": "3.0.0-alpha.1",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
-        "craft-plugin",
-        "Excel Import"
+        "craft-plugin"
     ],
+    "support": {
+        "email": "support@topshelfcraft.com",
+        "issues": "https://github.com/topshelfcraft/legacy-login/issues"
+    },
+    "license": "proprietary",
     "authors": [
         {
             "name": "Michael Rog",
@@ -24,17 +28,10 @@
             "homepage": "https://buzzingpixel.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ],
     "require": {
         "php": ">=7.0.0",
-        "craftcms/cms": "^3.0.0-beta.28",
-        "vlucas/phpdotenv": "^2.4.0",
-        "roave/security-advisories": "dev-master"
+        "craftcms/cms": "^3.0",
+        "topshelfcraft/ranger": "^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -46,9 +43,14 @@
         "handle": "legacy-login",
         "developer": "Top Shelf Craft",
         "developerUrl": "https://topshelfcraft.com",
-        "schemaVersion": "0.0.0",
+        "schemaVersion": "3.0.0.0",
         "hasCpSettings": false,
         "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/topshelfcraft/legacy-login/master/CHANGELOG.md",
+        "components": {
+            "handlers": "topshelfcraft\\legacylogin\\services\\Handlers",
+            "login": "topshelfcraft\\legacylogin\\services\\Login"
+        },
         "class": "topshelfcraft\\legacylogin\\LegacyLogin"
     }
 }

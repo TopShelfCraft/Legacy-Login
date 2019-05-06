@@ -1,80 +1,51 @@
 <?php
-
 namespace topshelfcraft\legacylogin\models;
 
 use craft\base\Model;
-use topshelfcraft\legacylogin\models\services\BaseLoginConfigModel;
-use topshelfcraft\legacylogin\models\services\CraftLoginConfigModel;
+use topshelfcraft\legacylogin\LegacyLogin;
 
 /**
- * Class SettingsModel
+ * @author Michael Rog <michael@michaelrog.com>
+ * @package Legacy-Login
+ * @since 3.0.0
  */
 class SettingsModel extends Model
 {
-    /** @var array CONFIG_MODEL_NAMES */
-    const CONFIG_MODEL_NAMES = [
-        'ee2' => 'EE2LoginConfigModel',
-        'wordPress' => 'WordPressLoginConfigModel',
-        'bigCommerce' => 'BigCommerceLoginConfigModel',
-        'wellspring' => 'WellspringLoginConfigModel',
-    ];
-
-    /** @var array $serviceConfig */
-    public $serviceConfig = [];
 
     /**
-     * Get service order
-     * @return BaseLoginConfigModel[]
-     */
-    public function getServiceConfig() : array
-    {
-        // Get service config model names
-        $configModelNames = self::CONFIG_MODEL_NAMES;
+	 * @var array $handlers
+	 */
+    public $handlers = [];
 
-        // Start an array for our service models with craft as the first item
-        $serviceModels = [
-            new CraftLoginConfigModel([
-                'configured' => true,
-            ]),
-        ];
+	/**
+	 * @var array $_instantiatedHandlers
+	 */
+    private $_instantiatedHandlers;
 
-        // Iterate through service config
-        foreach ($this->serviceConfig as $key => $config) {
-            // Make sure this is a service we can support and it's not craft
-            if ($key === 'craft' || ! isset($configModelNames[$key])) {
-                continue;
-            }
+	/**
+	 * @param array $config
+	 *
+	 * @return array
+	 */
+    public function getHandlers($config = null)
+	{
 
-            // Get the config settings model
-            $serviceModels[] = $this->getConfigSettingsModel(
-                $configModelNames[$key],
-                $config
-            );
+		if ($config === null && isset($this->_instantiatedHandlers))
+		{
+			return $this->_instantiatedHandlers;
+		}
 
-            // Unset the config model name item
-            unset($configModelNames[$key]);
-        }
+		$_config = is_null($config) ? $this->handlers : $config;
 
-        // Return the service models
-        return $serviceModels;
-    }
+		$handlers = LegacyLogin::$plugin->handlers->getConfiguredHandlers($_config);
 
-    /**
-     * Get config settings model
-     * @param string $modelName,
-     * @param array $config
-     * @return BaseLoginConfigModel
-     */
-    private function getConfigSettingsModel(
-        string $modelName,
-        array $config = []
-    ) : BaseLoginConfigModel {
-        // Build the model class
-        $class = "\\topshelfcraft\\legacylogin\\models\\services\\{$modelName}";
+		if ($config === null)
+		{
+			$this->_instantiatedHandlers = $handlers;
+		}
 
-        // Return the model
-        return new $class($config + [
-            'configured' => true,
-        ]);
-    }
+		return $handlers;
+
+	}
+
 }

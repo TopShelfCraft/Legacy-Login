@@ -11,7 +11,7 @@ by Michael Rog
 
 The _Legacy Login_ plugin provides a way to authenticate users from a legacy system into your Craft CMS site.
 
-The plugin replaces the normal `login` form action. If a submitted `loginName`/`password` fails Craft's native authentication (i.e. the legacy user doesn't yet exist in the new Craft site), the plugin checks the legacy system's user data table and tries to authenticate a user from there. If a matching legacy user is found and authenticated, the plugin imports the User into Craft and logs into the newly created account.
+The plugin replaces the normal `login` form action. If a submitted `loginName`/`password` fails Craft's native authentication (i.e. the legacy user doesn't yet exist in the new Craft site), the plugin checks the legacy system(s) and tries to authenticate a user from there. If a matching legacy user is found and authenticated, the plugin imports the User into Craft and logs into the newly created account.
 
 * * *
 
@@ -21,6 +21,8 @@ The plugin replaces the normal `login` form action. If a submitted `loginName`/`
 
 Drivers are provided for authenticating legacy users from:
 
+- Craft CMS 3.x
+- Craft CMS 2.x
 - ExpressionEngine 2.x
 - WordPress
 - BigCommerce (Self-hosted)
@@ -43,7 +45,7 @@ Finally, add the _Legacy Login_ form to your login template. The template follow
 <form method="post" accept-charset="UTF-8">
 
 	{{ getCsrfInput() }}
-	<input type="hidden" name="action" value="legacyLogin/login">
+	<input type="hidden" name="action" value="legacy-login/login">
 
 	<label for="loginName">Username or email</label>
 	<input id="loginName" type="text" name="loginName" value="{{ craft.session.rememberedUsername }}">
@@ -66,24 +68,29 @@ Finally, add the _Legacy Login_ form to your login template. The template follow
 ```
 
 
-
 ### Configuration
 
 To customize the plugin's behavior, add a `legacylogin.php` file to your Craft config directory. (You can use `plugins/legacylogin/config.php` as a template.) The file should return an array; Like Craft's own General Configs, the _Legacy Login_ config supports Craft's [Multi-Environment Configs](https://craftcms.com/docs/multi-environment-configs) syntax.
 
 The following settings are available:
 
-##### `allowedSystems`
+#### `handlers`
 
-An _array_ containing allowed legacy system names: `'BigCommerce'`, `'EE2'`, or both
+An _array_ defining the legacy authentication handlers.
+ 
+Each handler takes the following options:
+ 
+##### `type`
 
-Default: `['BigCommerce', 'EE2', 'Wellspring', 'WordPress']`
+`'Craft3'`, `'Craft2'`, `'EE2'`, `'BigCommerce'`, `'Wellspring'`, `'WordPress'`, or a custom (fully qualified) class name.
 
-##### `matchBy`
+Default: `'Craft3'`
 
-A _string_ which determines what attribute(s) of legacy users will be used to potentially match them with an existing Craft user: `'email'`, `'username'`, or `'both'`
+##### `createNewUser`
 
-Default: `'email'`
+A _boolean_ which determines whether to create a new Craft user if a matching one doesn't already exist in the system. (If `false`, only current Users can be logged in via legacy handlers. Authentication for legacy users that don't match a User in the current system will fail whether the loginName/password are correct or not.)
+
+Default: `true`
 
 ##### `setPassword`
 
@@ -101,7 +108,7 @@ Default: `false`
 
 ### What are the system requirements?
 
-Craft 2.6+ and PHP 5.4+
+Craft 3.0+ and PHP 7.1+
 
 
 
@@ -116,4 +123,5 @@ I'm not surprised... _Legacy Login_ is still in development. Please open a GitHu
 #### Contributors:
 
   - Plugin development: [Michael Rog](http://michaelrog.com) / @michaelrog
-  - Added WordPress and Wellspring drivers: [Aaron Waldon](https://www.causingeffect.com) / @aaronwaldon
+  - Craft 2 plugin - WordPress and Wellspring drivers: [Aaron Waldon](https://www.causingeffect.com) / @aaronwaldon
+  - Craft 3 plugin - initial port: [TJ Draper](https://buzzingpixel.com/) / @buzzingpixel

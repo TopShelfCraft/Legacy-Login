@@ -1,11 +1,5 @@
 <?php
-/**
- * Portable PHP password hashing framework.
- * @package phpass
- * @since 2.5.0
- * @version 0.3 / WordPress
- * @link http://www.openwall.com/phpass/
- */
+namespace topshelfcraft\legacylogin\libraries;
 
 #
 # Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in

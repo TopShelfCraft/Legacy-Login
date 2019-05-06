@@ -3,158 +3,237 @@
 namespace topshelfcraft\legacylogin\controllers;
 
 use Craft;
-use craft\helpers\UrlHelper;
+use craft\elements\User;
+use craft\errors\ElementNotFoundException;
+use craft\errors\MissingComponentException;
+use craft\events\LoginFailureEvent;
+use craft\helpers\Json;
+use craft\helpers\User as UserHelper;
 use craft\web\Controller;
+use topshelfcraft\legacylogin\handers\BaseAuthHandler;
 use topshelfcraft\legacylogin\LegacyLogin;
-use topshelfcraft\legacylogin\models\LoginModel;
-use \yii\base\Response;
+use topshelfcraft\legacylogin\models\Login;
+use topshelfcraft\legacylogin\models\SettingsModel;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
-/**
- * Login Controller
- */
 class LoginController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    protected $allowAnonymous = [
-        'actionLogin'
-    ];
 
-    /**
-     * Handles log-in via POST request
-     * @return Response|null
-     * @throws \Exception
-     */
-    public function actionLogin()
-    {
-        // Bail if this isn't a POST request
-        $this->requirePostRequest();
+	/**
+	 * @event LoginFailureEvent The event that is triggered when a login attempt fails.
+	 */
+	const EVENT_LOGIN_FAILURE = 'loginFailure';
 
-        // If user is already logged in skip to processing as successful
-        if (Craft::$app->getUser()->getIdentity() !== null) {
-            return $this->handleSuccessfulLogin();
-        }
+	/**
+	 * @inheritdoc
+	 */
+	protected $allowAnonymous = [
+		'actionLogin'
+	];
 
-        // Get the request service
-        $requestService = Craft::$app->getRequest();
+	/**
+	 * @var string
+	 */
+	public $defaultAction = 'login';
 
-        // Get posted inputs and assign them to the model
-        $model = new LoginModel([
-            'username' => $requestService->post('username'),
-            'password' => $requestService->post('password'),
-            'rememberMe' => (bool) $requestService->post('rememberMe'),
-        ]);
+	/*
+	 * Public methods
+	 */
 
-        // Check if the model validates
-        if (! $model->validate()) {
-            // Check for ajax request
-            if ($requestService->getIsAjax()) {
-                return $this->asJson([
-                    'success' => false,
-                    'inputErrors' => $model->getErrors()
-                ]);
-            }
+	/**
+	 * @inheritdoc
+	 */
+	public function beforeAction($action)
+	{
 
-            // Set route variables
-            Craft::$app->getUrlManager()->setRouteParams($model->toArray() + [
-                'inputErrors' => $model->getErrors(),
-            ]);
+		/*
+		 * Don't enable CSRF validation for login requests if the user is already logged-in.
+		 * (Guards against double-clicking a Login button.)
+		 * c.f. Craft UsersController::beforeAction()
+		 */
+		if ($action->id === 'login' && !Craft::$app->getUser()->getIsGuest()) {
+			$this->enableCsrfValidation = false;
+		}
 
-            // End processing
-            return null;
-        }
+		return parent::beforeAction($action);
 
-        // Attempt to log the user in
-        $responseModel = LegacyLogin::$plugin->getLoginService()->login($model);
+	}
 
-        // If the login attempt didn't go as planned...
-        if (! $responseModel->success) {
-            // Check for ajax request
-            if ($requestService->getIsAjax()) {
-                return $this->asJson($responseModel->toArray());
-            }
+	/**
+	 * @return Response
+	 *
+	 * @throws BadRequestHttpException
+	 * @throws MissingComponentException
+	 * @throws ElementNotFoundException
+	 * @throws Exception
+	 * @throws \Throwable
+	 */
+	public function actionLogin()
+	{
 
-            // Set route variables
-            Craft::$app->getUrlManager()->setRouteParams(
-                $responseModel->toArray()
-            );
+		if (!Craft::$app->getUser()->getIsGuest()) {
+			// Too easy.
+			return $this->_handleSuccessfulLogin(false);
+		}
 
-            // End processing
-            return null;
-        }
+		$this->requirePostRequest();
 
-        // Handle the successful login
-        return $this->handleSuccessfulLogin($responseModel->type);
-    }
+		$login = new Login([
+			'loginName' => Craft::$app->getRequest()->getRequiredBodyParam('loginName'),
+			'password' => Craft::$app->getRequest()->getRequiredBodyParam('password'),
+			'rememberMe' => (bool) Craft::$app->getRequest()->getBodyParam('rememberMe'),
+		]);
 
-    /**
-     * Handles the post-login process
-     * @param string $loginType legacy|craft
-     * @param bool $setNotice Whether a flash notice should be set if not AJAX
-     * @return Response
-     * @throws \Exception
-     */
-    private function handleSuccessfulLogin(
-        string $loginType = '',
-        bool $setNotice = true
-    ) : Response {
-        // Get the session service
-        $sessionService = Craft::$app->getSession();
+		if (!$login->validate())
+		{
+			return $this->_handleLoginFailure(User::AUTH_INVALID_CREDENTIALS);
+		}
 
-        // Get the current user
-        $currentUser = Craft::$app->getUser()->getIdentity();
+		/*
+		 * Craft's User controller adds a random delay to the login process, to help thwart timing attacks.
+		 * Legacy Login has presumably more options to execute (i.e. auth via Craft + legacy handlers), so
+		 * the timing characteristics of its login action are both heavier AND less predictable.
+		 * Therefore, in this case, it's seemingly not very helpful to add a delay like Craft natively does.
+		 */
+		usleep(42);
 
-        // Find out if they were trying to access a URL beforehand
-        $returnUrl = Craft::$app->getUser()->getReturnUrl();
+		// Can the current Craft app authenticate this user?
 
-        // Get request service
-        $requestService = Craft::$app->getRequest();
+		if (LegacyLogin::$plugin->login->loginWithNativeCraft($login))
+		{
+			return $this->_handleSuccessfulLogin(true);
+		}
 
-        if ($returnUrl === null ||
-            $returnUrl === $requestService->getFullPath()
-        ) {
-            // If this is a CP request and they can access CP, send them
-            // wherever postCpLoginRedirect tells us
-            if ($requestService->getIsCpRequest() &&
-                $currentUser->can('accessCp')
-            ) {
-                $postCpLoginRedirect = Craft::$app->getConfig()
-                    ->getGeneral()
-                    ->postCpLoginRedirect;
+		// Can any of our legacy services auth this user?
 
-                $returnUrl = UrlHelper::cpUrl($postCpLoginRedirect);
-            }
+		$settings = LegacyLogin::$plugin->getSettings();
 
-            if ($returnUrl) {
-                $postLoginRedirect = Craft::$app->getConfig()
-                    ->getGeneral()
-                    ->postLoginRedirect;
+		/** @var SettingsModel $settings */
+		foreach ($settings->getHandlers() as $handler)
+		{
 
-                $returnUrl = UrlHelper::siteUrl($postLoginRedirect);
-            }
-        }
+			if (LegacyLogin::$plugin->login->loginWithHandler($login, $handler))
+			{
+				return $this->_handleSuccessfulLogin(true);
+			}
 
-        // Check if we should respond with ajax
-        if ($requestService->getIsAjax()) {
-            return $this->asJson([
-                'success' => true,
-                'legacyLoginType' => $loginType,
-                'returnUrl' => $returnUrl,
-            ]);
-        }
+		}
 
-        // Check if we should set the notice
-        if ($setNotice) {
-            // Set the notice
-            $sessionService->setNotice(Craft::t('legacy-login', 'Logged in.'));
-        }
+		// No luck.
 
-        // Store login information for use by the next request
-        $sessionService->setFlash('legacyLoginSuccess', true);
-        $sessionService->setFlash('legacyLoginType', $loginType);
+		return $this->_handleLoginFailure($login->authError ?: User::AUTH_INVALID_CREDENTIALS, $login->user);
 
-        // Redirect to the correct URL
-        return $this->redirect($returnUrl);
-    }
+	}
+
+	/*
+	 * Private methods
+	 */
+
+	/**
+	 * @param bool $setNotice
+	 * @param BaseAuthHandler $handler
+	 *
+	 * @return Response
+	 *
+	 * @throws MissingComponentException
+	 * @throws BadRequestHttpException
+	 */
+	private function _handleSuccessfulLogin($setNotice = false, BaseAuthHandler $handler = null)
+	{
+
+		$request = Craft::$app->getRequest();
+		$sessionService = Craft::$app->getSession();
+		$userSession = Craft::$app->getUser();
+
+		// Get the return URL...
+		$returnUrl = $userSession->getReturnUrl();
+		// ...and clear it out.
+		$userSession->removeReturnUrl();
+
+		// If the request wants JSON...
+
+		if ($request->getAcceptsJson()) {
+
+			$return = [
+				'success' => true,
+				'returnUrl' => $returnUrl,
+				'handler' => Json::encode($handler->getAttributes()),
+			];
+
+			if (Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
+			{
+				$return['csrfTokenValue'] = $request->getCsrfToken();
+			}
+
+			return $this->asJson($return);
+
+		}
+
+		// Okay, not a JSON request...
+
+		if ($setNotice) {
+			$sessionService->setNotice(Craft::t('app', 'Logged in.'));
+		}
+
+		// Store flash info for use by the next request
+		$sessionService->setFlash('legacyLoginSuccess', true);
+		$sessionService->setFlash('legacyLoginHandler', $handler);
+
+		return $this->redirectToPostedUrl($userSession->getIdentity(), $returnUrl);
+
+	}
+
+	/**
+	 * @param string|null $authError
+	 * @param User|null $user
+	 *
+	 * @return Response|null
+	 *
+	 * @throws MissingComponentException ...if `getSession()` can't access the Session service.
+	 */
+	private function _handleLoginFailure(string $authError = null, User $user = null)
+	{
+
+		$message = UserHelper::getLoginFailureMessage($authError, $user);
+
+		// Fire a 'loginFailure' event
+		$event = new LoginFailureEvent([
+			'authError' => $authError,
+			'message' => $message,
+			'user' => $user,
+		]);
+		$this->trigger(self::EVENT_LOGIN_FAILURE, $event);
+
+		if (Craft::$app->getRequest()->getAcceptsJson()) {
+
+			return $this->asJson([
+				'errorCode' => $authError,
+				'error' => $message,
+			]);
+
+		}
+
+		Craft::$app->getSession()->setError($event->message);
+
+		Craft::$app->getUrlManager()->setRouteParams([
+			'loginName' => Craft::$app->getRequest()->getBodyParam('loginName'),
+			'rememberMe' => (bool)Craft::$app->getRequest()->getBodyParam('rememberMe'),
+			'errorCode' => $authError,
+			'errorMessage' => $message,
+		]);
+
+		return null;
+
+	}
+
+	/**
+	 * Fakes a password validation, to help thwart timing attacks, in cases we don't end up with an actual submitted password to validate.
+	 */
+	private function _doFakeValidation()
+	{
+		Craft::$app->getSecurity()->validatePassword('p@ss1w0rd', '$2y$13$nj9aiBeb7RfEfYP3Cum6Revyu14QelGGxwcnFUKXIrQUitSodEPRi');
+	}
+
 }

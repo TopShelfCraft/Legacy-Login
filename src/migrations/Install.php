@@ -1,20 +1,22 @@
 <?php
-
 namespace topshelfcraft\legacylogin\migrations;
 
 use craft\db\Migration;
 
 /**
- * Install migration.
+ * @author Michael Rog <michael@michaelrog.com>
+ * @package Legacy-Login
+ * @since 3.0.0
  */
 class Install extends Migration
 {
+
     /**
      * @inheritdoc
      */
     public function safeUp() : bool
     {
-        return $this->iterateAndRun('safeUp');
+        return $this->_runAllMigrations('safeUp');
     }
 
     /**
@@ -22,34 +24,43 @@ class Install extends Migration
      */
     public function safeDown() : bool
     {
-        return $this->iterateAndRun('safeDown');
+        return $this->_runAllMigrations('safeDown');
     }
 
     /**
      * @param $method
      * @return bool
      */
-    private function iterateAndRun($method) : bool
+    private function _runAllMigrations($method) : bool
     {
-        foreach (new \DirectoryIterator(__DIR__) as $fileInfo) {
-            if ($fileInfo->isDot() || $fileInfo->getExtension() !== 'php') {
+
+    	/*
+    	 * Iterate over all the migrations that exist at the time of installation/un-installation.
+    	 */
+
+        foreach (new \DirectoryIterator(__DIR__) as $file) {
+
+            if ($file->isDot() || $file->getExtension() !== 'php') {
                 continue;
             }
 
-            $fileName = $fileInfo->getBasename('.php');
+            $fileName = $file->getBasename('.php');
 
+            // Skip the Install file, which we're already in, lest we recurse forever.
             if ($fileName === 'Install') {
                 continue;
             }
 
-            $class = '\\topshelfcraft\\legacylogin\\migrations\\';
-            $class .= $fileInfo->getBasename('.php');
+            $class = '\\topshelfcraft\\legacylogin\\migrations\\' . $fileName;
 
-            if (! (new $class())->{$method}()) {
+            if (!(new $class())->{$method}()) {
                 return false;
             }
+
         }
 
         return true;
+
     }
+
 }
