@@ -29,7 +29,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1",
         "craftcms/cms": "^3.0",
         "topshelfcraft/ranger": "^3.0"
     },

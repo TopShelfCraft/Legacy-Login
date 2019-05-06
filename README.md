@@ -3,7 +3,7 @@
 _Seamless legacy authentication for CraftCMS_
 
 by Michael Rog  
-[http://topshelfcraft.com](http://topshelfcraft.com)
+[https://topshelfcraft.com](https://topshelfcraft.com)
 
 
 
@@ -29,26 +29,26 @@ Drivers are provided for authenticating legacy users from:
 - Wellspring
 
 
-### Setup
+## Installation
 
-First, copy the `legacylogin` folder into your Craft plugins directory.
+1. From your project directory, use Composer to require the plugin package:
 
-Then, navitage to the _Settings > Plugins_ area of the control panel, and _Install_ the plugin.
+   ```
+   composer require topshelfcraft/legacy-login
+   ```
 
-The plugin creates a data table for each supported legacy system (i.e. `craft_legacylogin_data_ee2` for storing ExpressionEngine member data).
+2. In the Control Panel, go to Settings → Plugins and click the “Install” button for Legacy Login.
 
-Import your legacy user data into the appropriate title. The schema should more-or-less match up; Some fields may be mismatched/skipped based on the version of the legacy system you're using, but the key fields (the username, id, email, and password hash) will be covered.
-
-Finally, add the _Legacy Login_ form to your login template. The template follows the same design as Craft's native login form, except the form action should point to the _LegacyLoginController_ rather than Craft's native _UsersController_:
+3. Finally, add the _Legacy Login_ form to your login template. The template follows the same design as Craft's native login form, except the form action should point to the _LegacyLoginController_ rather than Craft's native _UsersController_:
 
 ```twig
 <form method="post" accept-charset="UTF-8">
 
-	{{ getCsrfInput() }}
+	{{ csrfInput() }}
 	<input type="hidden" name="action" value="legacy-login/login">
 
 	<label for="loginName">Username or email</label>
-	<input id="loginName" type="text" name="loginName" value="{{ craft.session.rememberedUsername }}">
+	<input id="loginName" type="text" name="loginName" value="{{ loginName ?? '' }}">
 
 	<label for="password">Password</label>
 	<input id="password" type="password" name="password">
@@ -67,10 +67,13 @@ Finally, add the _Legacy Login_ form to your login template. The template follow
 </form>
 ```
 
+_Note: Legacy Login is also available for installation via the Craft CMS Plugin Store._
+
+
 
 ### Configuration
 
-To customize the plugin's behavior, add a `legacylogin.php` file to your Craft config directory. (You can use `plugins/legacylogin/config.php` as a template.) The file should return an array; Like Craft's own General Configs, the _Legacy Login_ config supports Craft's [Multi-Environment Configs](https://craftcms.com/docs/multi-environment-configs) syntax.
+To customize the plugin's behavior, add a `legacy-login.php` file to your Craft config directory. (You can use `plugins/legacylogin/config.php` as a template.) The file should return an array; Like Craft's own General Configs, the _Legacy Login_ config supports Craft's [Multi-Environment Configs](https://craftcms.com/docs/multi-environment-configs) syntax.
 
 The following settings are available:
 
@@ -104,6 +107,14 @@ A _boolean_ which determines whether to set the _Require Password Reset_ flag on
 
 Default: `false`
 
+##### `userTable`
+
+For database-backed handlers: the name of the table from which legacy user data should be queried.
+
+##### `db`
+
+For database-backed handlers: an array of database config options, following the same template as Craft's own [Database Connection Settings](https://docs.craftcms.com/v3/config/db-settings.html).
+
 
 
 ### What are the system requirements?
@@ -124,4 +135,4 @@ I'm not surprised... _Legacy Login_ is still in development. Please open a GitHu
 
   - Plugin development: [Michael Rog](http://michaelrog.com) / @michaelrog
   - Craft 2 plugin - WordPress and Wellspring drivers: [Aaron Waldon](https://www.causingeffect.com) / @aaronwaldon
-  - Craft 3 plugin - initial port: [TJ Draper](https://buzzingpixel.com/) / @buzzingpixel
+  - Craft 3 plugin - initial Craft 3 port: [TJ Draper](https://buzzingpixel.com/) / @buzzingpixel

@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
 abstract class BaseDbTypeAuthHandler extends BaseAuthHandler {
 
 	/**
-	 * @var string $dbDriver
+	 * @var array $db
 	 */
 	public $db;
 
@@ -33,10 +33,10 @@ abstract class BaseDbTypeAuthHandler extends BaseAuthHandler {
 
 		$connection = null;
 
-		if (!empty($db))
+		if (!empty($this->db))
 		{
 			// TODO: Test
-			$config = App::dbConfig((new DbConfig($db)));
+			$config = App::dbConfig((new DbConfig($this->db)));
 			$connection = Craft::createObject($config);
 		}
 
