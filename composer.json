@@ -2,7 +2,7 @@
     "name": "topshelfcraft/legacy-login",
     "description": "User-base migration made simple.",
     "type": "craft-plugin",
-    "version": "3.0.0-alpha.1",
+    "version": "3.0.0-alpha.2",
     "keywords": [
         "craft",
         "cms",

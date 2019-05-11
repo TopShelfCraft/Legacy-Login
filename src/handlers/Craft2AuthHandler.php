@@ -72,7 +72,7 @@ class Craft2AuthHandler extends BaseDbTypeAuthHandler
 	 *
 	 * @return User|null
 	 */
-	public function getMatchedUser($userData = null): User
+	public function getMatchedUser($userData = null): ?User
 	{
 
 		return Craft::$app->getUsers()->getUserByUsernameOrEmail($userData['email'])
