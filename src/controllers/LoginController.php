@@ -30,7 +30,7 @@ class LoginController extends Controller
 	 * @inheritdoc
 	 */
 	protected $allowAnonymous = [
-		'actionLogin'
+		'login'
 	];
 
 	/**
