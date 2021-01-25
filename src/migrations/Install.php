@@ -11,56 +11,96 @@ use craft\db\Migration;
 class Install extends Migration
 {
 
-    /**
-     * @inheritdoc
-     */
-    public function safeUp() : bool
-    {
-        return $this->_runAllMigrations('safeUp');
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function safeUp() : bool
+	{
 
-    /**
-     * @inheritdoc
-     */
-    public function safeDown() : bool
-    {
-        return $this->_runAllMigrations('safeDown');
-    }
+		if ($this->createTables())
+		{
+			$this->addForeignKeys();
+			Craft::$app->db->schema->refresh();
+		}
 
-    /**
-     * @param $method
-     * @return bool
-     */
-    private function _runAllMigrations($method) : bool
-    {
+		return true;
 
-    	/*
-    	 * Iterate over all the migrations that exist at the time of installation/un-installation.
-    	 */
+	}
 
-        foreach (new \DirectoryIterator(__DIR__) as $file) {
+	/**
+	 * @inheritdoc
+	 */
+	public function safeDown() : bool
+	{
 
-            if ($file->isDot() || $file->getExtension() !== 'php') {
-                continue;
-            }
+		$this->dropTableIfExists(MatchedUser::tableName());
 
-            $fileName = $file->getBasename('.php');
+		return true;
 
-            // Skip the Install file, which we're already in, lest we recurse forever.
-            if ($fileName === 'Install') {
-                continue;
-            }
+	}
 
-            $class = '\\topshelfcraft\\legacylogin\\migrations\\' . $fileName;
+	/*
+	 * Protected methods
+	 */
 
-            if (!(new $class())->{$method}()) {
-                return false;
-            }
+	/**
+	 * @return bool
+	 */
+	protected function createTables()
+	{
 
-        }
+		// Matched Users table
 
-        return true;
+		if (!$this->db->tableExists(MatchedUser::tableName())) {
 
-    }
+			$this->createTable(MatchedUser::tableName(), [
+
+				'id' => $this->primaryKey(),
+
+				'userId' => $this->integer()->notNull(),
+
+				'handlerName' => $this->string(),
+				'handlerType' => $this->string(),
+
+				'legacyLoginName' => $this->string(),
+				'legacyUserId' => $this->string(),
+
+				'userCreated' => $this->boolean(),
+				'passwordSet' => $this->boolean(),
+				'passwordResetRequired' => $this->boolean(),
+
+				'dateCreated' => $this->dateTime()->notNull(),
+				'dateUpdated' => $this->dateTime()->notNull(),
+				'uid' => $this->uid(),
+
+			]);
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * @return void
+	 */
+	protected function addForeignKeys()
+	{
+
+		// Link Matched User userId to Craft User id
+
+		$this->addForeignKey(
+			null,
+			MatchedUser::tableName(),
+			['userId'],
+			User::tableName(),
+			['id'],
+			'CASCADE',
+			null
+		);
+
+	}
 
 }
