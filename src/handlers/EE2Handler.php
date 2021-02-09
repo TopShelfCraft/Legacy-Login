@@ -21,6 +21,8 @@ final class EE2Handler extends DbTypeHandler
 		128 => 'sha512',
 	];
 
+	public $table = 'exp_members';
+
 	public function authenticate(LoginRequest $login): bool
 	{
 

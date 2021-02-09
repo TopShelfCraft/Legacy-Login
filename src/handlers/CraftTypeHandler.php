@@ -9,6 +9,8 @@ use TopShelfCraft\LegacyLogin\login\LoginRequest;
 abstract class CraftTypeHandler extends DbTypeHandler
 {
 
+	public $table = 'users';
+
 	public function authenticate(LoginRequest $login): bool
 	{
 
