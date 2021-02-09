@@ -7,6 +7,7 @@ use craft\events\LoginFailureEvent;
 use craft\helpers\User as UserHelper;
 use craft\web\Controller;
 use Exception;
+use TopShelfCraft\LegacyLogin\handlers\BaseHandler;
 use TopShelfCraft\LegacyLogin\LegacyLogin;
 use TopShelfCraft\LegacyLogin\login\LoginRecord;
 use TopShelfCraft\LegacyLogin\login\LoginRequest;
@@ -64,7 +65,7 @@ class LoginController extends Controller
 			/*
 			 * If a User is already logged in, skip straight to Success, just like UsersController::actionLogin().
 			 */
-			return $this->_handleSuccessfulLogin(false);
+			return $this->_handleSuccessfulLogin();
 		}
 
 		/*
@@ -107,7 +108,7 @@ class LoginController extends Controller
 
 			if ($handler->handle($login))
 			{
-				return $this->_handleSuccessfulLogin();
+				return $this->_handleSuccessfulLogin($handler);
 			}
 
 		}
@@ -116,7 +117,7 @@ class LoginController extends Controller
 
 	}
 
-	private function _handleSuccessfulLogin(LoginRecord $legacyLoginRecord = null, $setFlash = true): Response
+	private function _handleSuccessfulLogin(BaseHandler $handler = null, $setFlash = true): Response
 	{
 
 		$userSession = Craft::$app->getUser();
@@ -129,7 +130,7 @@ class LoginController extends Controller
 			$return = [
 				'success' => true,
 				'returnUrl' => $returnUrl,
-				'legacyLogin' => $legacyLoginRecord ? $legacyLoginRecord->getAttributes() : null,
+				'legacyLoginHandler' => $handler,
 			];
 
 			if (Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
@@ -141,9 +142,9 @@ class LoginController extends Controller
 
 		}
 
-		if ($setFlash && $legacyLoginRecord)
+		if ($setFlash && $handler)
 		{
-			Craft::$app->getSession()->setFlash('legacyLogin', $legacyLoginRecord->getAttributes());
+			Craft::$app->getSession()->setFlash('legacyLoginHandler', $handler);
 		}
 
 		return $this->redirectToPostedUrl($userSession->getIdentity(), $returnUrl);
