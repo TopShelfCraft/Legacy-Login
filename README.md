@@ -170,3 +170,4 @@ I'm not surprised... _Legacy Login_ is still in beta. Please open a GitHub Issue
   - Plugin development: [Michael Rog](http://michaelrog.com) / @michaelrog
   - WordPress and Wellspring drivers for Craft 2: [Aaron Waldon](https://www.causingeffect.com) / @aaronwaldon
   - Initial port for Craft 3: [TJ Draper](https://buzzingpixel.com/) / @buzzingpixel
+  - Skeleton key icon: [Becca](https://thenounproject.com/hello100), via [The Noun Project](https://thenounproject.com/search/?q=skeleton+key&i=188844)
