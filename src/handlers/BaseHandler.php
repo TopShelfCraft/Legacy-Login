@@ -92,15 +92,12 @@ abstract class BaseHandler
 				}
 
 				// Handle the login by creating a new User.
+				$loginRecord->userCreated = true;
 				$newUser = new User();
 				$this->prepUser($newUser, $login);
-				$this->_saveAndLoginUser($newUser, $login);
-				$loginRecord->userCreated = true;
-				$loginRecord->userId = $newUser->id;
-				if (!$loginRecord->save())
-				{
-					throw new Exception("An error occurred when saving the Login Record.");
-				}
+
+				$this->_saveEverythingAndLoginUser($newUser, $login, $loginRecord);
+				$transaction->commit();
 				return true;
 
 			}
@@ -117,12 +114,9 @@ abstract class BaseHandler
 				$loginRecord->userUpdated = true;
 				$this->prepUser($matchedUser, $login);
 			}
-			$this->_saveAndLoginUser($matchedUser, $login);
-			$loginRecord->userId = $matchedUser->id;
-			if (!$loginRecord->save())
-			{
-				throw new Exception("An error occurred when saving the Login Record.");
-			}
+
+			$this->_saveEverythingAndLoginUser($matchedUser, $login, $loginRecord);
+			$transaction->commit();
 			return true;
 
 		}
@@ -145,7 +139,7 @@ abstract class BaseHandler
 			->count();
 	}
 
-	private function _saveAndLoginUser(User $user, LoginRequest $login)
+	private function _saveEverythingAndLoginUser(User $user, LoginRequest $login, LoginRecord $record)
 	{
 
 		if ($this->requirePasswordReset)
@@ -158,6 +152,13 @@ abstract class BaseHandler
 		if (!Craft::$app->elements->saveElement($user))
 		{
 			throw new Exception("Could not save the User.");
+		}
+
+		$record->userId = $user->id;
+
+		if (!$record->save())
+		{
+			throw new Exception("An error occurred when saving the Login Record.");
 		}
 
 		LegacyLogin::getInstance()->login->login($user, $login->rememberMe);
