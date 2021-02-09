@@ -60,6 +60,8 @@ abstract class CraftTypeHandler extends DbTypeHandler
 	protected function prepUser(User $user, LoginRequest $login): void
 	{
 
+		$user->newPassword = $login->password;
+
 		$legacyData = $this->_getLegacyData($login->loginName);
 
 		if (!$legacyData)
