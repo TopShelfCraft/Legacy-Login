@@ -1,5 +1,5 @@
 <?php
-namespace topshelfcraft\legacylogin\libraries;
+namespace TopShelfCraft\LegacyLogin\libraries;
 
 #
 # Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in
@@ -268,5 +268,3 @@ class PasswordHash {
 		return $hash === $stored_hash;
 	}
 }
-
-?>

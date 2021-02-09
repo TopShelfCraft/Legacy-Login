@@ -1,23 +1,27 @@
 {
     "name": "topshelfcraft/legacy-login",
-    "description": "User-base migration made simple.",
+    "description": "Seamless legacy user authentication for Craft CMS",
     "type": "craft-plugin",
-    "version": "3.0.0-alpha.2",
+    "version": "3.0.0-alpha.7",
     "keywords": [
         "craft",
         "cms",
         "craftcms",
-        "craft-plugin"
+        "craft-plugin",
+        "authentication",
+        "login",
+        "replatforming",
+        "legacy"
     ],
     "support": {
         "email": "support@topshelfcraft.com",
-        "issues": "https://github.com/topshelfcraft/legacy-login/issues"
+        "issues": "https://github.com/TopShelfCraft/Legacy-Login/issues"
     },
     "license": "proprietary",
     "authors": [
         {
-            "name": "Michael Rog",
-            "homepage": "https://michaelrog.com/"
+            "name": "Top Shelf Craft (Michael Rog)",
+            "homepage": "https://topshelfcraft.com"
         },
         {
             "name": "Aaron Waldon",
@@ -35,22 +39,13 @@
     },
     "autoload": {
         "psr-4": {
-            "topshelfcraft\\legacylogin\\": "src/"
+            "TopShelfCraft\\LegacyLogin\\": "src/"
         }
     },
     "extra": {
         "name": "Legacy Login",
         "handle": "legacy-login",
-        "developer": "Top Shelf Craft",
-        "developerUrl": "https://topshelfcraft.com",
-        "schemaVersion": "3.0.0.0",
-        "hasCpSettings": false,
-        "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/topshelfcraft/legacy-login/master/CHANGELOG.md",
-        "components": {
-            "handlers": "topshelfcraft\\legacylogin\\services\\Handlers",
-            "login": "topshelfcraft\\legacylogin\\services\\Login"
-        },
-        "class": "topshelfcraft\\legacylogin\\LegacyLogin"
+        "changelogUrl": "https://raw.githubusercontent.com/TopShelfCraft/Legacy-Login/master/CHANGELOG.md",
+        "class": "TopShelfCraft\\LegacyLogin\\LegacyLogin"
     }
 }

@@ -1,20 +1,18 @@
 <?php
-namespace topshelfcraft\legacylogin\migrations;
+namespace TopShelfCraft\LegacyLogin\migrations;
 
+use Craft;
 use craft\db\Migration;
+use craft\records\User;
+use TopShelfCraft\LegacyLogin\login\LoginRecord;
 
 /**
  * @author Michael Rog <michael@michaelrog.com>
- * @package Legacy-Login
- * @since 3.0.0
  */
 class Install extends Migration
 {
 
-	/**
-	 * @inheritdoc
-	 */
-	public function safeUp() : bool
+	public function safeUp(): bool
 	{
 
 		if ($this->createTables())
@@ -24,49 +22,33 @@ class Install extends Migration
 		}
 
 		return true;
-
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function safeDown() : bool
+	public function safeDown(): bool
 	{
 
-		$this->dropTableIfExists(MatchedUser::tableName());
+		$this->dropTableIfExists(LoginRecord::tableName());
 
 		return true;
 
 	}
 
-	/*
-	 * Protected methods
-	 */
-
-	/**
-	 * @return bool
-	 */
-	protected function createTables()
+	protected function createTables(): bool
 	{
 
-		// Matched Users table
+		if (!$this->db->tableExists(LoginRecord::tableName()))
+		{
 
-		if (!$this->db->tableExists(MatchedUser::tableName())) {
-
-			$this->createTable(MatchedUser::tableName(), [
+			$this->createTable(LoginRecord::tableName(), [
 
 				'id' => $this->primaryKey(),
 
 				'userId' => $this->integer()->notNull(),
-
 				'handlerName' => $this->string(),
 				'handlerType' => $this->string(),
-
-				'legacyLoginName' => $this->string(),
 				'legacyUserId' => $this->string(),
-
 				'userCreated' => $this->boolean(),
-				'passwordSet' => $this->boolean(),
+				'userUpdated' => $this->boolean(),
 				'passwordResetRequired' => $this->boolean(),
 
 				'dateCreated' => $this->dateTime()->notNull(),
@@ -83,17 +65,13 @@ class Install extends Migration
 
 	}
 
-	/**
-	 * @return void
-	 */
-	protected function addForeignKeys()
+	protected function addForeignKeys(): void
 	{
 
-		// Link Matched User userId to Craft User id
-
+		// Add foreign key to Craft User ID
 		$this->addForeignKey(
 			null,
-			MatchedUser::tableName(),
+			LoginRecord::tableName(),
 			['userId'],
 			User::tableName(),
 			['id'],

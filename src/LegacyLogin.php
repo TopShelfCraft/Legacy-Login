@@ -1,46 +1,61 @@
 <?php
-namespace topshelfcraft\legacylogin;
+namespace TopShelfCraft\LegacyLogin;
 
+use Craft;
 use craft\base\Plugin as BasePlugin;
-use topshelfcraft\legacylogin\models\SettingsModel;
-use topshelfcraft\legacylogin\services\Handlers;
-use topshelfcraft\legacylogin\services\Login;
+use craft\console\Application as ConsoleApplication;
+use craft\web\Application as WebApplication;
+use TopShelfCraft\LegacyLogin\config\Settings;
+use TopShelfCraft\LegacyLogin\handlers\Handlers;
+use TopShelfCraft\LegacyLogin\login\Login;
 use topshelfcraft\ranger\Plugin;
 
 /**
  * @author Michael Rog <michael@michaelrog.com>
- * @package Legacy-Login
- * @since 3.0.0
  *
  * @property Handlers $handlers
  * @property Login $login
+ *
+ * @method Settings getSettings()
  */
 class LegacyLogin extends BasePlugin
 {
 
-    /**
-	 * @var LegacyLogin $plugin
-	 */
-    public static $plugin;
+	public $hasCpSection = false;
+	public $hasCpSettings = false;
+	public $schemaVersion = '3.0.0.0';
 
-	/**
-	 * Initializes the plugin.
-	 */
-    public function init()
+	public function __construct($id, $parent = null, array $config = [])
+	{
+		$config['components'] = [
+			'handlers' => Handlers::class,
+			'login' => Login::class,
+		];
+		parent::__construct($id, $parent, $config);
+	}
+
+	public function init(): void
     {
 
         parent::init();
-        self::$plugin = $this;
 		Plugin::watch($this);
+
+		Craft::setAlias('@TopShelfCraft/LegacyLogin', __DIR__);
+
+		if (Craft::$app instanceof ConsoleApplication)
+		{
+			$this->controllerNamespace = 'TopShelfCraft\\LegacyLogin\\controllers\\console';
+		}
+		if (Craft::$app instanceof WebApplication)
+		{
+			$this->controllerNamespace = 'TopShelfCraft\\LegacyLogin\\controllers\\web';
+		}
 
     }
 
-    /**
-     * @return SettingsModel
-     */
-    protected function createSettingsModel() : SettingsModel
+    protected function createSettingsModel(): Settings
     {
-        return new SettingsModel();
+        return new Settings();
     }
 
 }
