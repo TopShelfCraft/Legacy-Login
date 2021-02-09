@@ -3,14 +3,10 @@ namespace TopShelfCraft\LegacyLogin\controllers\web;
 
 use Craft;
 use craft\elements\User;
-use craft\errors\ElementNotFoundException;
-use craft\errors\MissingComponentException;
 use craft\events\LoginFailureEvent;
-use craft\helpers\Json;
 use craft\helpers\User as UserHelper;
 use craft\web\Controller;
 use Exception;
-use TopShelfCraft\LegacyLogin\handlers\BaseHandler;
 use TopShelfCraft\LegacyLogin\LegacyLogin;
 use TopShelfCraft\LegacyLogin\login\LoginRecord;
 use TopShelfCraft\LegacyLogin\login\LoginRequest;
@@ -33,10 +29,9 @@ class LoginController extends Controller
 	];
 
 	/**
-	 * @var string
+	 * @inheritdoc
 	 */
 	public $defaultAction = 'login';
-
 
 	/**
 	 * @inheritdoc
@@ -59,8 +54,10 @@ class LoginController extends Controller
 
 	/**
 	 * Attempts to fulfill a Login request using either native Craft authentication or a legacy handler.
+	 *
+	 * @throws BadRequestHttpException if the Request is not POST
 	 */
-	public function actionLogin(): Response
+	public function actionLogin(): ?Response
 	{
 
 		if (!Craft::$app->getUser()->getIsGuest()) {
@@ -132,7 +129,7 @@ class LoginController extends Controller
 			$return = [
 				'success' => true,
 				'returnUrl' => $returnUrl,
-				'legacyLogin' => $legacyLoginRecord->getAttributes(),
+				'legacyLogin' => $legacyLoginRecord ? $legacyLoginRecord->getAttributes() : null,
 			];
 
 			if (Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
@@ -144,7 +141,7 @@ class LoginController extends Controller
 
 		}
 
-		if ($setFlash)
+		if ($setFlash && $legacyLoginRecord)
 		{
 			Craft::$app->getSession()->setFlash('legacyLogin', $legacyLoginRecord->getAttributes());
 		}
