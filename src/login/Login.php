@@ -4,7 +4,6 @@ namespace TopShelfCraft\LegacyLogin\login;
 use Craft;
 use craft\elements\User;
 use Exception;
-use TopShelfCraft\LegacyLogin\LegacyLogin;
 
 final class Login
 {

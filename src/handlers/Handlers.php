@@ -63,7 +63,7 @@ final class Handlers
 
 			if (!($handler instanceof BaseHandler))
 			{
-				throw new Exception('Handler class must extend BaseAuthHandler.');
+				throw new Exception('Handler class must extend BaseHandler.');
 			}
 
 		}
