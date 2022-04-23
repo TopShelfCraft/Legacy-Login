@@ -51,9 +51,7 @@ final class Handlers
 			throw new Exception('Handler type must be defined.');
 		}
 
-		$class = isset(self::HANDLER_CLASSES[strtolower($type)])
-			? self::HANDLER_CLASSES[strtolower($type)]
-			: $type;
+		$class = self::HANDLER_CLASSES[strtolower($type)] ?? $type;
 
 		try
 		{
