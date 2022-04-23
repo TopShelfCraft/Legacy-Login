@@ -20,7 +20,7 @@ final class Handlers
 		'craft3' => Craft3Handler::class,
 		'ee2' => EE2Handler::class,
 		'wellspring' => '',
-		'wordpress' => '',
+		'wordpress' => WordpressHandler::class,
 	];
 
 	/**

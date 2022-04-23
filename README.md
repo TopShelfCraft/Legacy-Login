@@ -21,18 +21,17 @@ The `legacy-login/login` custom action stands in for Craft's native `login` form
 
 ## What legacy systems are supported?
 
-Drivers are provided for authenticating legacy users from:
+Legacy Login provides drivers for authenticating legacy users from:
 
 - Craft CMS 3.x
 - Craft CMS 2.x
 - ExpressionEngine 2.x
-
-And, coming soon (as soon as they're ported from the Craft 2 version)...
 - WordPress
+
+Two legacy drivers are not yet ported to the Craft 3 version of Legacy Login:
+
 - BigCommerce (Self-hosted)
 - Wellspring
-
-
 
 ## Installation
 
