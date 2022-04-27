@@ -88,7 +88,7 @@ final class WordpressHandler extends DbTypeHandler
 			$user->username = $legacyData['user_login'] ?: $legacyData['user_email'];
 		}
 
-		$user->email = $legacyData['email'];
+		$user->email = $legacyData['user_email'];
 
 	}
 
