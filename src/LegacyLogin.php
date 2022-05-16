@@ -20,7 +20,7 @@ use TopShelfCraft\LegacyLogin\login\Login;
 class LegacyLogin extends Plugin
 {
 
-	public ?string $changelogUrl = "https://raw.githubusercontent.com/TopShelfCraft/Legacy-Login/master/CHANGELOG.md";
+	public ?string $changelogUrl = "https://raw.githubusercontent.com/TopShelfCraft/Legacy-Login/4.x/CHANGELOG.md";
 	public bool $hasCpSection = false;
 	public bool $hasCpSettings = false;
 	public string $schemaVersion = "3.0.0.0";
