@@ -19,30 +19,15 @@ abstract class BaseHandler
 
 	const TYPE = '';
 
-	/**
-	 * @var string
-	 */
-	public $name;
+	public string $name;
 
-	/**
-	 * @var bool
-	 */
-	public $createUser = true;
+	public bool $createUser = true;
 
-	/**
-	 * @var bool
-	 */
-	public $updateUser = true;
+	public bool $updateUser = true;
 
-	/**
-	 * @var bool
-	 */
-	public $requirePasswordReset = false;
+	public bool $requirePasswordReset = false;
 
-	/**
-	 * @var int
-	 */
-	public $maxLogins = 1;
+	public int $maxLogins = 1;
 
 	abstract public function authenticate(LoginRequest $login): bool;
 

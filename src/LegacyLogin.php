@@ -2,13 +2,12 @@
 namespace TopShelfCraft\LegacyLogin;
 
 use Craft;
-use craft\base\Plugin as BasePlugin;
 use craft\console\Application as ConsoleApplication;
 use craft\web\Application as WebApplication;
+use TopShelfCraft\base\Plugin;
 use TopShelfCraft\LegacyLogin\config\Settings;
 use TopShelfCraft\LegacyLogin\handlers\Handlers;
 use TopShelfCraft\LegacyLogin\login\Login;
-use topshelfcraft\ranger\Plugin;
 
 /**
  * @author Michael Rog <michael@michaelrog.com>
@@ -18,27 +17,23 @@ use topshelfcraft\ranger\Plugin;
  *
  * @method Settings getSettings()
  */
-class LegacyLogin extends BasePlugin
+class LegacyLogin extends Plugin
 {
 
-	public $hasCpSection = false;
-	public $hasCpSettings = false;
-	public $schemaVersion = '3.0.0.0';
-
-	public function __construct($id, $parent = null, array $config = [])
-	{
-		$config['components'] = [
-			'handlers' => Handlers::class,
-			'login' => Login::class,
-		];
-		parent::__construct($id, $parent, $config);
-	}
+	public ?string $changelogUrl = "https://raw.githubusercontent.com/TopShelfCraft/Legacy-Login/master/CHANGELOG.md";
+	public bool $hasCpSection = false;
+	public bool $hasCpSettings = false;
+	public string $schemaVersion = "3.0.0.0";
 
 	public function init(): void
     {
 
+    	$this->setComponents([
+			'handlers' => Handlers::class,
+			'login' => Login::class,
+		]);
+
         parent::init();
-		Plugin::watch($this);
 
 		Craft::setAlias('@TopShelfCraft/LegacyLogin', __DIR__);
 

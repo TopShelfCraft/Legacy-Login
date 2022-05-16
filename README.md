@@ -6,9 +6,7 @@ _Seamless legacy user authentication for Craft CMS_
 [Michael Rog](https://michaelrog.com), Proprietor
 
 
-
 * * *
-
 
 
 ## TL;DR.
@@ -18,11 +16,11 @@ The _Legacy Login_ plugin provides a way to authenticate users from a legacy sys
 The `legacy-login/login` custom action stands in for Craft's native `login` form action. If a submitted `loginName`/`password` fails Craft's native authentication, the plugin checks the legacy system(s) and tries to authenticate a user from there. If a matching legacy user is found and authenticated, the plugin creates or updates the User in Craft and logs into the newly created/matched account.
 
 
-
 ## What legacy systems are supported?
 
 Legacy Login provides drivers for authenticating legacy users from:
 
+- Craft CMS 4.x
 - Craft CMS 3.x
 - Craft CMS 2.x
 - ExpressionEngine 2.x
@@ -32,6 +30,7 @@ Two legacy drivers are not yet ported to the Craft 3 version of Legacy Login:
 
 - BigCommerce (Self-hosted)
 - Wellspring
+
 
 ## Installation
 
@@ -74,7 +73,6 @@ Two legacy drivers are not yet ported to the Craft 3 version of Legacy Login:
 ```
 
 
-
 ## Configuration
 
 To customize the plugin's behavior, add a `legacy-login.php` file to your Craft config directory:
@@ -110,9 +108,7 @@ What the handler should be called in Legacy Login records.
  
 ##### `type`
 
-`'Craft3'`, `'Craft2'`, `'EE2'`, `'BigCommerce'`, `'Wellspring'`, `'WordPress'`, or a custom (fully qualified) class name.
-
-Default: `'Craft3'`
+`'Craft4'`, `'Craft3'`, `'Craft2'`, `'EE2'`, `'BigCommerce'`, `'Wellspring'`, `'WordPress'`, or a custom (fully qualified) class name.
 
 ##### `createUser`
 
@@ -149,17 +145,14 @@ For database-type handlers: The name of the table from which legacy user data sh
 For database-type handlers: An array of database config options, following the same template as Craft's own [Database Connection Settings](https://craftcms.com/docs/3.x/config/#database-connection-settings).
 
 
-
 ## What are the system requirements?
 
-Craft 3.5+ and PHP 7.1+
-
+Craft 4.0+ and PHP 8.0+
 
 
 ## I found a bug.
 
 I'm not surprised... _Legacy Login_ is still in beta. Please open a GitHub Issue or submit a PR.
-
 
 
 * * *

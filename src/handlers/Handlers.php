@@ -18,6 +18,7 @@ final class Handlers
 		'bigcommerce' => '',
 		'craft2' => Craft2Handler::class,
 		'craft3' => Craft3Handler::class,
+		'craft4' => Craft4Handler::class,
 		'ee2' => EE2Handler::class,
 		'wellspring' => '',
 		'wordpress' => WordpressHandler::class,
