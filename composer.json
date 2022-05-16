@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^4.5",
+        "craftcms/cms": "^4.0",
         "topshelfcraft/base": "^4.0.1"
     },
     "autoload": {
