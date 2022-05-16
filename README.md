@@ -11,7 +11,7 @@ _Seamless legacy user authentication for Craft CMS_
 
 ## TL;DR.
 
-The _Legacy Login_ plugin provides a way to authenticate users from a legacy system into your Craft CMS site.
+The **Legacy Login** plugin provides a way to authenticate users from a legacy system into your Craft CMS site.
 
 The `legacy-login/login` custom action stands in for Craft's native `login` form action. If a submitted `loginName`/`password` fails Craft's native authentication, the plugin checks the legacy system(s) and tries to authenticate a user from there. If a matching legacy user is found and authenticated, the plugin creates or updates the User in Craft and logs into the newly created/matched account.
 
@@ -26,7 +26,7 @@ Legacy Login provides drivers for authenticating legacy users from:
 - ExpressionEngine 2.x
 - WordPress
 
-Two legacy drivers are not yet ported to the Craft 3 version of Legacy Login:
+Two legacy drivers are not yet ported to the Craft 4 version of Legacy Login:
 
 - BigCommerce (Self-hosted)
 - Wellspring
@@ -44,7 +44,7 @@ Two legacy drivers are not yet ported to the Craft 3 version of Legacy Login:
 
 2. In the Control Panel, go to **Settings → Plugins** and click the **“Install”** button for Legacy Login.
 
-3. Finally, add the _Legacy Login_ form to your login template. The template follows the same design as Craft's native login form, except the form action should point to the _LegacyLoginController_ rather than Craft's native _UsersController_:
+3. Finally, add the Legacy Login form to your login template. The template follows the same design as Craft's native login form, except the form action should point to the _LegacyLoginController_ rather than Craft's native _UsersController_:
 
 ```twig
 <form method="post" accept-charset="UTF-8">
@@ -92,7 +92,7 @@ return [
 ``` 
 The file should return an array, following the same format as Craft's own [Config files](https://craftcms.com/docs/3.x/config/).
 
-(As with all Config files in Craft, the _Legacy Login_ config supports [Multi-Environment Configs](https://craftcms.com/docs/3.x/config/#multi-environment-configs) and other techniques for [Environmental Configuration](https://craftcms.com/docs/3.x/config/#environmental-configuration).)
+(As with all Config files in Craft, the Legacy Login config supports [Multi-Environment Configs](https://craftcms.com/docs/3.x/config/#multi-environment-configs) and other techniques for [Environmental Configuration](https://craftcms.com/docs/3.x/config/#environmental-configuration).)
 
 #### `handlers`
 
@@ -152,7 +152,7 @@ Craft 4.0+ and PHP 8.0+
 
 ## I found a bug.
 
-I'm not surprised... _Legacy Login_ is still in beta. Please open a GitHub Issue or submit a PR.
+I'm not surprised... **Legacy Login** is still in beta. Please open a GitHub Issue or submit a PR.
 
 
 * * *
