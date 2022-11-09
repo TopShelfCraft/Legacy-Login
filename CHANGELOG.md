@@ -3,6 +3,13 @@
 The format of this file is based on ["Keep a Changelog"](http://keepachangelog.com/). This project adheres to [Semantic Versioning](http://semver.org/). Version numbers follow the pattern: `MAJOR.FEATURE.BUGFIX`
 
 
+## 4.0.1 - 2022-11-09
+
+### Changed
+
+- Increase Craft version requirement, to exclude CMS versions with known security vulnerabilities.
+
+
 ## 4.0.0.1 - 2022-05-16
 
 ### Fixed

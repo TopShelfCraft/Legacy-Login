@@ -2,7 +2,7 @@
     "name": "topshelfcraft/legacy-login",
     "description": "Seamless legacy user authentication for Craft CMS",
     "type": "craft-plugin",
-    "version": "4.0.0.1",
+    "version": "4.0.1",
     "keywords": [
         "craft",
         "cms",
@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^4.0",
+        "craftcms/cms": "^4.2.1",
         "topshelfcraft/base": "^4.0.1"
     },
     "autoload": {
