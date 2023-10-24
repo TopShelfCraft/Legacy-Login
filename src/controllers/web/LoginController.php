@@ -25,7 +25,7 @@ class LoginController extends Controller
 	/**
 	 * @inheritdoc
 	 */
-	protected $allowAnonymous = [
+	protected array|bool|int $allowAnonymous = [
 		'login' => self::ALLOW_ANONYMOUS_LIVE | self::ALLOW_ANONYMOUS_OFFLINE,
 	];
 
