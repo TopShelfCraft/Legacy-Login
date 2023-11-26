@@ -9,7 +9,6 @@ use craft\web\Controller;
 use Exception;
 use TopShelfCraft\LegacyLogin\handlers\BaseHandler;
 use TopShelfCraft\LegacyLogin\LegacyLogin;
-use TopShelfCraft\LegacyLogin\login\LoginRecord;
 use TopShelfCraft\LegacyLogin\login\LoginRequest;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
